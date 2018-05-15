@@ -1,0 +1,29 @@
+{
+  "name": "Sauron-Web",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/icons": "^1.0.0-beta.42",
+    "axios": "latest",
+    "axios-cache-adapter": "^2.0.0",
+    "express": "^4.16.3",
+    "jquery": "^3.3.1",
+    "material-ui": "^1.0.0-beta.42",
+    "prop-types": "latest",
+    "puppeteer": "^1.3.0",
+    "react": "^16.3.1",
+    "react-dom": "^16.3.1",
+    "react-scripts": "^1.1.4",
+    "xmlserializer": "^0.6.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "proxy": "node ./src/proxy.js"
+  },
+  "devDependencies": {
+    "express-reload": "^1.1.0"
+  }
+}
