@@ -1,16 +1,17 @@
-import React from 'react';
-import PropTypes from 'prop-types'
-import {withStyles} from 'material-ui/styles';
-import ExpansionPanel, {ExpansionPanelSummary,ExpansionPanelDetails,} from 'material-ui/ExpansionPanel';
-import Typography from 'material-ui/Typography';
+import * as React from 'react';
+import * as PropTypes from 'prop-types'
+import * as ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import * as ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import * as ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import Typography from '@material-ui/core//Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TextField from "material-ui/TextField";
-import Button from "material-ui/Button"
-import List from "material-ui/List"
+import TextField from "@material-ui/core/TextField";
+import Button from "@material-ui/core/Button"
+import List from "@material-ui/core/List"
 import DeleteIcon from "@material-ui/icons/Delete"
-import {ExpansionPanelActions} from "material-ui/ExpansionPanel"
-import Grid from "material-ui/Grid"
-import IconButton from 'material-ui/IconButton';
+import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions"
+import Grid from "@material-ui/core/Grid"
+import IconButton from '@material-ui/core/IconButton';
 import Extractor from './models'
 
 const styles = theme => ({
@@ -55,7 +56,7 @@ class ExtractorList extends React.Component {
         const {expanded} = this.state;
         return (
             <React.Fragment>
-                <List >
+                <List>
                     {
                         Array.from(this.props.extractors.map((ex, index) => {
                             return <ExtractorExpansionPanel
@@ -129,7 +130,7 @@ class ExtractorExpansionPanel extends React.Component {
             //self
             <ExpansionPanel onChange={props.onChange}
                             expanded={props.expanded}
-                            onMouseOver={this.handleMouseOver} >
+                            onMouseOver={this.handleMouseOver}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                     <Grid container justify="space-between" alignItems="center">
                         <Grid item xs={2}>
@@ -186,11 +187,9 @@ ExtractorExpansionPanel.propTypes = {
     hoverCallback: PropTypes.func
 };
 
-let vsep = withStyles(styles)(ExtractorExpansionPanel);
-let vsel = withStyles(styles)(ExtractorList);
 
 export {
-    vsep as ExtractorExpansionPanel,
-    vsel as ExtractorList,
+    ExtractorExpansionPanel,
+    ExtractorList,
 };
 
