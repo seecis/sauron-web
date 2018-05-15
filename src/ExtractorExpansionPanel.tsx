@@ -1,8 +1,7 @@
 import * as React from 'react';
-import * as PropTypes from 'prop-types'
-import * as ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import * as ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import * as ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import Typography from '@material-ui/core//Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from "@material-ui/core/TextField";
@@ -14,23 +13,20 @@ import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton';
 import Extractor from './models'
 
-const styles = theme => ({
-    root: {
-        flexGrow: 1,
-    },
-    heading: {
-        fontSize: theme.typography.pxToRem(15),
-        fontWeight: theme.typography.fontWeightRegular,
-    },
-});
+class ExtractorList extends React.Component<any, any> {
+    handleDelete = (index) => (e) => {
+        e.preventDefault();
+        this.setState(state => {
+            state.childExtractors.splice(index, 1);
+            return state;
+        });
+    };
 
-class ExtractorList extends React.Component {
-    constructor(props) {
-        super();
+    constructor(props: { extractors: Array<Extractor> }) {
+        super(props);
         this.state = {
             expanded: false,
             childExtractors: props.extractors,
-
         };
 
         this.handleExtractorExpand = this.handleExtractorExpand.bind(this);
@@ -43,14 +39,6 @@ class ExtractorList extends React.Component {
             });
         };
     }
-
-    handleDelete = (index) => (e) => {
-        e.preventDefault();
-        this.setState(state => {
-            state.childExtractors.splice(index, 1);
-            return state;
-        });
-    };
 
     render() {
         const {expanded} = this.state;
@@ -77,9 +65,20 @@ class ExtractorList extends React.Component {
     }
 }
 
-class ExtractorExpansionPanel extends React.Component {
-    constructor(props) {
-        super();
+class ExtractorExpansionPanel extends React.Component<any, any> {
+    private extractor: Extractor;
+
+    handleMouseOver = (event) => {
+        event.preventDefault();
+        this.props.hoverCallback(this.extractor.path);
+    };
+    childHover = (path) => {
+        this.props.hoverCallback(this.extractor.path + " > " + path);
+    };
+
+    constructor(props: { extractor: Extractor }) {
+        super(props);
+        this.extractor = props.extractor;
         this.state = {childExtractors: []};
         this.handleExtractorExpand = this.handleExtractorExpand.bind(this);
         this.addSubQuery = this.addSubQuery.bind(this);
@@ -106,15 +105,6 @@ class ExtractorExpansionPanel extends React.Component {
     deleteSubquery(index) {
         this.props.onDelete(index)
     }
-
-    handleMouseOver = (event) => {
-        event.preventDefault();
-        this.props.hoverCallback(this.props.extractor.getPath());
-    };
-
-    childHover = (path) => {
-        this.props.hoverCallback(this.props.extractor.getPath() + " > " + path);
-    };
 
     /**
      * @return {null}
@@ -172,21 +162,6 @@ class ExtractorExpansionPanel extends React.Component {
         )
     }
 }
-
-ExtractorList.propTypes = {
-    extractors: PropTypes.object.isRequired,
-    depth: PropTypes.number.isRequired,
-    parentValue: PropTypes.string,
-    onListItemHover: PropTypes.func
-};
-
-ExtractorExpansionPanel.propTypes = {
-    index: PropTypes.number.isRequired,
-    extractor: PropTypes.object.isRequired,
-    parentValue: PropTypes.string,
-    hoverCallback: PropTypes.func
-};
-
 
 export {
     ExtractorExpansionPanel,

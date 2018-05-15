@@ -1,11 +1,5 @@
 class Extractor {
-    constructor(path) {
-        this.path = path;
-    }
-
-    getPath() {
-        return this.path;
-    }
+    constructor(public path: string) {}
 }
 
 export default Extractor;

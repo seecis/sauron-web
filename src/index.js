@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import * as React from "react"
+import * as ReactDOM from "react-dom"
 import axios from 'axios';
 import './index.css';
-import Button from 'material-ui/Button';
-import CssBaseline from 'material-ui/CssBaseline';
+import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
 import {setupCache} from 'axios-cache-adapter'
-import {MuiThemeProvider, createMuiTheme} from 'material-ui/styles';
-import purple from 'material-ui/colors/purple';
-import {ExtractorList} from './ExtractorExpansionPanel'
-import Extractor from "./models.js"
-import Drawer from "material-ui/Drawer";
+import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
+import purple from '@material-ui/core/colors/purple';
+import {ExtractorList} from './ExtractorExpansionPanel.tsx'
+import Extractor from "./models.ts"
 import ExtractorWindow from "./ExtractorWindow.jsx"
+import './App.scss'
 
 const cache = setupCache(/* options */);
 

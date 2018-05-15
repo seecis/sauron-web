@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './index.css';
 import {setupCache} from 'axios-cache-adapter'
-import Extractor from "./models.js"
+import Extractor from "./models.ts"
 import ExtractorLayoutBox from "./ExtractorLayoutBox.jsx"
 
 jQuery.fn.extend({
