@@ -1,7 +1,7 @@
 import * as React from 'react';
+import {ChangeEvent} from 'react';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
+import {ExpansionPanelDetails, ExpansionPanelSummary} from '@material-ui/core/'
 import Typography from '@material-ui/core//Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TextField from "@material-ui/core/TextField";
@@ -13,8 +13,15 @@ import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton';
 import Extractor from './models'
 
-class ExtractorList extends React.Component<any, any> {
-    handleDelete = (index) => (e) => {
+interface ExtractorListProps {
+    extractors: Array<Extractor>,
+    parentValue: string,
+    onListItemHover: (string) => any
+    depth: number;
+}
+
+class ExtractorList extends React.Component<ExtractorListProps, any> {
+    handleDelete = (index: number) => (e: MouseEvent) => {
         e.preventDefault();
         this.setState(state => {
             state.childExtractors.splice(index, 1);
@@ -22,40 +29,40 @@ class ExtractorList extends React.Component<any, any> {
         });
     };
 
-    constructor(props: { extractors: Array<Extractor> }) {
+    handleExtractorExpand = (index: number) => (event, expanded) => {
+        this.setState({
+            expanded: expanded ? index : -1,
+        });
+    };
+
+    private parentValue: string;
+    private onListItemHover: (string) => any;
+
+    constructor(props: ExtractorListProps) {
         super(props);
+        this.parentValue = props.parentValue;
+        this.onListItemHover = props.onListItemHover;
         this.state = {
             expanded: false,
-            childExtractors: props.extractors,
-        };
-
-        this.handleExtractorExpand = this.handleExtractorExpand.bind(this);
-    }
-
-    handleExtractorExpand(index) {
-        return (event, expanded) => {
-            this.setState({
-                expanded: expanded ? index : -1,
-            });
+            childExtractors: props.extractors
         };
     }
 
     render() {
-        const {expanded} = this.state;
         return (
             <React.Fragment>
-                <List>
+                <List style={{padding: "8px"}}>
                     {
-                        Array.from(this.props.extractors.map((ex, index) => {
-                            return <ExtractorExpansionPanel
-                                expanded={expanded === index}
+                        Array.from(this.state.childExtractors.map((ex: Extractor, index: number) => {
+                            return <ExtractorView
+                                expanded={this.state.expanded === index}
                                 index={index + 1}
                                 depth={0}
                                 extractor={ex}
                                 onChange={this.handleExtractorExpand(index)}
                                 onDelete={this.handleDelete(index)}
-                                parentValue={this.props.parentValue}
-                                hoverCallback={this.props.onListItemHover}
+                                parentValue={this.parentValue}
+                                hoverCallback={this.onListItemHover}
                             />
                         }))
                     }
@@ -65,50 +72,47 @@ class ExtractorList extends React.Component<any, any> {
     }
 }
 
-class ExtractorExpansionPanel extends React.Component<any, any> {
-    private extractor: Extractor;
+interface ExtractorExpansionPanelProps {
+    hoverCallback: (string) => any
+    onDelete: (number) => any
+    expanded?: boolean | undefined
+    index: number
+    depth: number
+    extractor: Extractor
+    onChange: (event: ChangeEvent<{}>, expanded: boolean | number) => void
+    parentValue: string
+}
 
+class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
     handleMouseOver = (event) => {
         event.preventDefault();
-        this.props.hoverCallback(this.extractor.path);
-    };
-    childHover = (path) => {
-        this.props.hoverCallback(this.extractor.path + " > " + path);
+        this.hoverCallback(this.extractor.path);
     };
 
-    constructor(props: { extractor: Extractor }) {
-        super(props);
-        this.extractor = props.extractor;
-        this.state = {childExtractors: []};
-        this.handleExtractorExpand = this.handleExtractorExpand.bind(this);
-        this.addSubQuery = this.addSubQuery.bind(this);
-        this.deleteSubquery = this.deleteSubquery.bind(this);
-        this.handleMouseOver = this.handleMouseOver.bind(this);
-    }
+    childHover = (path: string) => {
+        this.hoverCallback(this.extractor.path + " > " + path)
+    };
 
-    handleExtractorExpand(index) {
-        return (event, expanded) => {
-            this.setState({
-                expanded: expanded ? index : -1,
-            });
-        };
-    }
-
-    addSubQuery() {
+    addSubQuery = () => {
         this.setState(state => {
             state.childExtractors.push(new Extractor("a"));
             state.expanded = state.childExtractors.length - 1;
             return state;
         });
+    };
+
+    private extractor: Extractor;
+    private hoverCallback: (string) => any;
+    private onChangeCallback: (event: React.ChangeEvent<{}>, expanded: (boolean | number)) => void;
+
+    constructor(props: ExtractorExpansionPanelProps) {
+        super(props);
+        this.hoverCallback = props.hoverCallback;
+        this.onChangeCallback = props.onChange;
+        this.extractor = props.extractor;
+        this.state = {childExtractors: []};
     }
 
-    deleteSubquery(index) {
-        this.props.onDelete(index)
-    }
-
-    /**
-     * @return {null}
-     */
     render() {
         const props = this.props;
         const {depth} = props;
@@ -118,53 +122,51 @@ class ExtractorExpansionPanel extends React.Component<any, any> {
 
         return depth > 3 ? (null) : (
             //self
-            <ExpansionPanel onChange={props.onChange}
-                            expanded={props.expanded}
-                            onMouseOver={this.handleMouseOver}>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
-                    <Grid container justify="space-between" alignItems="center">
-                        <Grid item xs={2}>
-                            <Typography>{name}</Typography>
+            <React.Fragment>
+                <ExpansionPanel onChange={props.onChange} expanded={props.expanded} onMouseOver={this.handleMouseOver}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
+                        <Grid container justify="space-between" alignItems="center">
+                            <Grid item xs={2}>
+                                <Typography>{name}</Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <IconButton onClick={this.props.onDelete}><DeleteIcon/></IconButton>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={2}>
-                            <IconButton onClick={this.props.onDelete}><DeleteIcon/></IconButton>
-                        </Grid>
-                    </Grid>
 
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                    <TextField
-                        label="Name of this field"
-                        id="margin-none"
-                        defaultValue={"Label " + props.index}
-                    />
-                </ExpansionPanelDetails>
-                <ExpansionPanelDetails>
-                    <Typography>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
-                        sit amet blandit leo lobortis eget.
-                    </Typography>
-                </ExpansionPanelDetails>
-
-                <ExpansionPanelDetails>
-                    <ExtractorList
-                        onListItemHover={this.childHover}
-                        extractors={childExtractors}
-                        depth={depth + 1}/>
-                </ExpansionPanelDetails>
-                <ExpansionPanelActions>
-                    {depth > 2 ? null : (
-                        <Button onClick={this.addSubQuery}>Add Subquery</Button>
-                    )}
-                    <Button onClick={this.props.onDelete}>Delete</Button>
-                </ExpansionPanelActions>
-            </ExpansionPanel>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <TextField
+                            label="Name of this field"
+                            id="margin-none"
+                            defaultValue={"Label " + props.index}
+                        />
+                    </ExpansionPanelDetails>
+                    <ExpansionPanelDetails>
+                        <Typography>
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex,
+                            sit amet blandit leo lobortis eget.
+                        </Typography>
+                    </ExpansionPanelDetails>
+                    <ExpansionPanelDetails>
+                        <ExtractorList
+                            onListItemHover={this.childHover}
+                            extractors={childExtractors}
+                            depth={depth + 1}
+                            parentValue={name}/>
+                    </ExpansionPanelDetails>
+                    <ExpansionPanelActions>
+                        {depth > 2 ? null : (<Button onClick={this.addSubQuery}>Add Subquery</Button>)}
+                        <Button onClick={this.props.onDelete}>Delete</Button>
+                    </ExpansionPanelActions>
+                </ExpansionPanel>
+            </React.Fragment>
         )
     }
 }
 
 export {
-    ExtractorExpansionPanel,
+    ExtractorView,
     ExtractorList,
 };
 

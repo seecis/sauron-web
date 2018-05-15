@@ -7,10 +7,10 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import {setupCache} from 'axios-cache-adapter'
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import purple from '@material-ui/core/colors/purple';
-import {ExtractorList} from './ExtractorExpansionPanel.tsx'
 import Extractor from "./models.ts"
 import ExtractorWindow from "./ExtractorWindow.jsx"
 import './App.scss'
+import {ExtractorList} from "./ExtractorExpansionPanel";
 
 const cache = setupCache(/* options */);
 
@@ -49,7 +49,6 @@ class ExtractorModule extends React.Component {
             onHoverSet(path);
         }
 
-        const {expanded} = this.state;
         return (<React.Fragment>
                 <div style={{width: this.props.style.width}}>
                     <Button onClick={this.createExtractor}>New extractor</Button>
