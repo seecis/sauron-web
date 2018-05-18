@@ -1,10 +1,16 @@
-import PropTypes from "prop-types";
-import React from 'react';
+import * as React from 'react';
+import {CSSProperties} from 'react'
 
 
-class ExtractorLayoutBox extends React.Component {
+interface ExtractorLayoutBoxProps {
+    selection: { top: number, left: number, width: number, height: number }
+    color?: string
+}
+
+class ExtractorLayoutBox extends React.Component<ExtractorLayoutBoxProps, any> {
+
     constructor(props) {
-        super();
+        super(props)
     }
 
     render() {
@@ -14,27 +20,22 @@ class ExtractorLayoutBox extends React.Component {
 
         const props = this.props;
 
-        function getStyle() {
+        function getStyle(): CSSProperties {
             const {selection} = props;
-            let t = selection.selectedTop;
-            let l = selection.selectedLeft;
+            let t = selection.top;
+            let l = selection.left;
             return {
                 backgroundColor: props.color ? props.color : "purple",
                 opacity: 0.3,
                 position: "absolute",
                 transform: "translate(" + l + "px, " + t + "px)",
-                width: selection.selectedWidth,
-                height: selection.selectedHeight,
+                width: selection.width,
+                height: selection.height,
             };
         }
 
         return <div style={getStyle()}/>
     }
 }
-
-ExtractorLayoutBox.propTypes = {
-    selection: PropTypes.object,
-    color: PropTypes.string
-};
 
 export default ExtractorLayoutBox;

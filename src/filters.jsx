@@ -1,6 +1,5 @@
 /** @jsx React.DOM */
 import React from 'react';
-import './index.css';
 
 var Filters = React.createClass({
     handleFilterChange: function() {
