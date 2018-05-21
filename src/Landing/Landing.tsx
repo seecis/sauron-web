@@ -22,7 +22,8 @@ class Landing extends React.Component<LandingProps, any> {
     private textInput: HTMLInputElement;
 
     handleButtonClick = () => {
-        this.props.history.push('/yellow');
+        let url = this.textInput.value;
+        this.props.history.push('/createExtractor/' + url);
     };
 
     render() {

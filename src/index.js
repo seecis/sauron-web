@@ -35,6 +35,7 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Route exact path={'/'} component={() => <Landing/>}/>
+                    <Route path={'/createExtractor/:url'} component={() => <div>Create Extractor Page</div>}/>
                 </div>
             </Router>
         </MuiThemeProvider>
