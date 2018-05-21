@@ -49,6 +49,8 @@
     "react": "latest",
     "react-dev-utils": "^5.0.1",
     "react-dom": "latest",
+    "react-router": "^4.2.0",
+    "react-router-dom": "^4.2.2",
     "resolve": "1.6.0",
     "style-loader": "0.19.0",
     "sw-precache-webpack-plugin": "0.11.4",
