@@ -1,3 +1,7 @@
+// Copyright 2018 Legrin, LLC
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
 import * as React from 'react';
 import {Card, CardContent} from '@material-ui/core/'
 import Typography from '@material-ui/core/Typography';
