@@ -11,19 +11,20 @@ import "./Landing.scss"
 import CardActions from "@material-ui/core/CardActions";
 import {withRouter} from 'react-router-dom';
 
-interface LandingProps extends React.HTMLProps<HTMLDivElement> {
-    onUrlReady: (value: string) => void;
-    history: any;
-}
-
-
-class Landing extends React.Component<LandingProps, any> {
+class Landing extends React.Component<any, any> {
     private urlRef: React.Ref<string>;
     private textInput: HTMLInputElement;
 
     handleButtonClick = () => {
         let url = this.textInput.value;
-        this.props.history.push('/createExtractor/' + url);
+        if(url == ''){
+            return;
+        }
+
+        url = 'https://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/';
+
+        url = url.replace('http://', '').replace('https://', '');
+        this.props.history.push('/page/' + url);
     };
 
     render() {

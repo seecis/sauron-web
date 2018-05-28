@@ -13,6 +13,8 @@ import './App.scss';
 import * as axios from "axios";
 import Landing from "./Landing/Landing";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
+import Page from "./Page";
+import Grid from '@material-ui/core/Grid/Grid';
 
 const cache = setupCache(/* options */);
 
@@ -27,15 +29,23 @@ const api = axios.create({
 });
 
 
-
 ReactDOM.render(
     <div style={{position: "relative", top: "0", height: "100vh"}}>
         <CssBaseline/>
         <MuiThemeProvider theme={theme}>
             <Router>
                 <div>
-                    <Route exact path={'/'} component={() => <Landing/>}/>
-                    <Route path={'/createExtractor/:url'} component={() => <div>Create Extractor Page</div>}/>
+                    <Route path={'/page/:url'} component={() => <Page api={api}/>}/>
+                    <Grid container style={{flexGrow: 1}}>
+                        <Grid item xs={0} md={1} lg={2}/>
+                        <Grid item xs={12} md={10} lg={8}>
+                            <Grid container justify={'center'}>
+                                <Grid item>
+                                    <Route exact path={'/'} component={() => <Landing/>}/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </Grid>
                 </div>
             </Router>
         </MuiThemeProvider>

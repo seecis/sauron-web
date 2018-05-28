@@ -70,6 +70,8 @@
   "devDependencies": {
     "@types/jquery": "^3.3.1",
     "@types/node": "*",
+    "@types/react-router": "^4.0.25",
+    "@types/react-router-dom": "^4.2.6",
     "awesome-typescript-loader": "4.0.0",
     "csstype": "^2.4.2",
     "express-reload": "^1.1.0",

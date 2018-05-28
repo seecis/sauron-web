@@ -1,3 +1,7 @@
+// Copyright 2018 Legrin, LLC
+//
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
 import * as React from 'react';
 import Extractor from './models'
 import ExtractorModule from "./ExtractorModule";
@@ -5,9 +9,11 @@ import BrowserInBrowser from "./BrowserInBrowser";
 import {AxiosStatic} from 'axios';
 import {MockDocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
+import {withRouter} from "react-router";
 
 interface PageProps {
-    api: AxiosStatic
+    api: AxiosStatic,
+    match: any
 }
 
 
@@ -45,7 +51,7 @@ class Page extends React.Component<PageProps, any> {
                         width: "100%",
                         height: "100%"
                     }}
-                    url={"https://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/"}
+                    url={this.props.match.url}
                     onNewExtractor={this.handleNewExtractor}
                     hoverQuery={this.state.hoverQuery}
                 />
@@ -54,4 +60,4 @@ class Page extends React.Component<PageProps, any> {
     }
 }
 
-export default Page;
+export default withRouter(Page);
