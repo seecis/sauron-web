@@ -15,6 +15,7 @@ import Landing from "./Landing/Landing";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Page from "./Page";
 import Grid from '@material-ui/core/Grid/Grid';
+import ExtractorListPage from './ExtractorListPage';
 
 const cache = setupCache(/* options */);
 
@@ -37,11 +38,12 @@ ReactDOM.render(
                 <div>
                     <Route path={'/page/:url'} component={() => <Page api={api}/>}/>
                     <Grid container style={{flexGrow: 1}}>
-                        <Grid item xs={0} md={1} lg={2}/>
+                        <Grid item md={1} lg={2}/>
                         <Grid item xs={12} md={10} lg={8}>
                             <Grid container justify={'center'}>
                                 <Grid item>
                                     <Route exact path={'/'} component={() => <Landing/>}/>
+                                    <Route path={'/extractors'} component={() => <ExtractorListPage/>}/>
                                 </Grid>
                             </Grid>
                         </Grid>
