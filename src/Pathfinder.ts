@@ -1,18 +1,22 @@
-import * as CssSelectorGenerator from 'css-selector-generator/build/css-selector-generator.js'
+import Simmer from 'simmerjs';
+
 
 class Pathfinder {
 
-    private root : Element;
+    private root: Element;
+    private simmer: Simmer;
+
     constructor(root: Element) {
         this.root = root;
+        this.simmer = new Simmer(root, {});
     }
 
     findUntilRoot = (el: HTMLElement | null): string => {
         if (el === null) {
             return ""
         }
-        let c = new CssSelectorGenerator;
-        return c.getSelector(el)
+        let c: Simmer = this.simmer(el);
+        return c.toString();
     }
 }
 

@@ -111,6 +111,9 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             return;
         }
 
+        if(this.p == null){
+            this.p = new Pathfinder(this.getSubDocumentRoot().body);
+        }
         let path = this.p.findUntilRoot(this.selectedElement);
         this.props.onNewExtractor(new Extractor(path));
     };
@@ -156,7 +159,6 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
     componentDidMount() {
         // todo: async
         this.fetchUrl(this.props.url);
-        this.p = new Pathfinder(this.getSubDocumentRoot().body);
     }
 }
 
