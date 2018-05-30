@@ -17,13 +17,11 @@ class Landing extends React.Component<any, any> {
 
     handleButtonClick = () => {
         let url = this.textInput.value;
-        if(url == ''){
+        if (url == '' || (!url.includes('http://') && !url.includes('https://'))) {
+            alert('Invalid URL');
             return;
         }
 
-        url = 'https://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/';
-
-        url = url.replace('http://', '').replace('https://', '');
         this.props.history.push('/page/' + url);
     };
 

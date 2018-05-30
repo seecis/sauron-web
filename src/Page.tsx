@@ -7,9 +7,10 @@ import Extractor from './models'
 import ExtractorModule from "./ExtractorModule";
 import BrowserInBrowser from "./BrowserInBrowser";
 import {AxiosStatic} from 'axios';
-import {MockDocumentFetcher} from './DocumentFetcher'
+import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
+import axios from 'axios';
 
 interface PageProps {
     api: AxiosStatic,
@@ -46,17 +47,29 @@ class Page extends React.Component<PageProps, any> {
             <main>
                 <BrowserInBrowser
                     key={"k"}
-                    api={new MockDocumentFetcher()}
+                    api={new Fetcher()}
                     style={{
                         width: "100%",
                         height: "100%"
                     }}
-                    url={this.props.match.url}
+                    url={'http://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
                     onNewExtractor={this.handleNewExtractor}
                     hoverQuery={this.state.hoverQuery}
                 />
             </main>
         </div>
+    }
+}
+
+class Fetcher implements DocumentFetcher {
+    async fetch(url: string) {
+        return axios.get('http://localhost:9092/proxy?url=' + url)
+            .then(function (response) {
+                return response.data;
+            })
+            .catch(function (error) {
+                return error;
+            });
     }
 }
 

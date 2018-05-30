@@ -15,7 +15,6 @@ import Landing from "./Landing/Landing";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Page from "./Page";
 import Grid from '@material-ui/core/Grid/Grid';
-import ExtractorListPage from './ExtractorListPage';
 
 const cache = setupCache(/* options */);
 
@@ -43,7 +42,6 @@ ReactDOM.render(
                             <Grid container justify={'center'}>
                                 <Grid item>
                                     <Route exact path={'/'} component={() => <Landing/>}/>
-                                    <Route path={'/extractors'} component={() => <ExtractorListPage/>}/>
                                 </Grid>
                             </Grid>
                         </Grid>

@@ -29,7 +29,11 @@ class Point {
 
 class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
     fetchUrl = (url) => {
-        this.setState({u: this.props.api.fetch(url)})
+        this.props.api.fetch(url).then(
+            (value: Object) => this.setState({u: value})
+        ).catch(
+            value => this.setState({u: value})
+        );
     };
     getSubDocumentRoot = () => {
         let frame = window.frames["wrapper"];
@@ -138,7 +142,9 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
                     srcDoc={this.state.u}
                     frameBorder="0"/>
                 <div id="overlay"
-                     onMouseMove={e => {this.mouseMove(this.translateCoordinates(e))}}
+                     onMouseMove={e => {
+                         this.mouseMove(this.translateCoordinates(e))
+                     }}
                      onClick={() => this.mouseClick()}>
                     <ExtractorLayoutBox selection={this.state.selection}/>
                     <ExtractorLayoutBox selection={this.state.hover}/>
