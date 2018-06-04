@@ -50,7 +50,7 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
     }
 
     componentWillReceiveProps(nextProps: Readonly<ExtractorListProps>, nextContext: any): void {
-        this.setState( {extractors: nextProps.extractors})
+        this.setState({extractors: nextProps.extractors})
     }
 
     render() {
@@ -69,6 +69,8 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                 parentValue={this.parentValue}
                                 hoverCallback={this.onListItemHover}
                                 extractorResolver={this.props.extractorResolver}
+                                onExtracorLabelChange={() => {
+                                }}
                             />
                         }))
                     }
@@ -87,6 +89,7 @@ interface ExtractorExpansionPanelProps {
     extractor: Query
     onChange: (event: ChangeEvent<{}>, expanded: boolean | number) => void
     extractorResolver: (ex: Query) => string
+    onExtracorLabelChange: (string, Query) => void
     parentValue: string
 }
 
@@ -106,6 +109,13 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
             state.expanded = state.childExtractors.length - 1;
             return state;
         });
+    };
+
+    handleLabelChange = (event) => {
+        let label = event.target.value;
+        this.props.onExtracorLabelChange(label, this.extractor);
+        this.extractor.name = label;
+        this.setState({extractor: this.extractor});
     };
 
     private extractor: Query;
@@ -146,6 +156,8 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
                         label="Name of this field"
                         id="margin-none"
                         defaultValue={"Label " + props.index}
+                        value={this.extractor.name}
+                        onChange={this.handleLabelChange}
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
