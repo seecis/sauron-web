@@ -127,7 +127,7 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
         this.hoverCallback = props.hoverCallback;
         this.onChangeCallback = props.onChange;
         this.extractor = props.extractor;
-        this.state = {childExtractors: []};
+        this.state = {childExtractors: props.extractor.subQueries};
     }
 
     render() {

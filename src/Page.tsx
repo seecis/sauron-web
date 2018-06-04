@@ -55,11 +55,14 @@ class Page extends React.Component<PageProps, any> {
     }
 
     render() {
+
+        const url = decodeURIComponent(this.props.match.url.replace('/page/',''));
+
         return <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
             <aside>
                 <ExtractorModule extractors={this.state.extractors}
                                  onHoverSet={(q) => this.setState({hoverQuery: q})}
-                                 url={'http://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
+                                 url={url}
                                  width={"420px"}/>
             </aside>
             <main>
@@ -70,7 +73,7 @@ class Page extends React.Component<PageProps, any> {
                         width: "100%",
                         height: "100%"
                     }}
-                    url={'http://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
+                    url={url}
                     onNewExtractor={this.handleNewExtractor}
                     hoverQuery={this.state.hoverQuery}
                     onGetSubDocumentRoot={(dom: Document) => {

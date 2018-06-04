@@ -18,8 +18,6 @@ export interface ExtractorModuleProps {
     url: string
 }
 
-const extractorPlaceholder = 'Please Input the Name';
-
 class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
     resolver = (e: Query) => {
         // Todo: implement this.
@@ -59,7 +57,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
             innerHtml: "",
             extractors: props.extractors,
             expanded: null,
-            extractorName: extractorPlaceholder
+            extractorName: ''
         };
     }
 
@@ -79,7 +77,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                             <Grid container>
                                 <Grid item xs={12}>
                                     <TextField
-                                        value={this.state.extractorName == extractorPlaceholder ? '' : this.state.extractorName}
+                                        value={this.state.extractorName}
                                         onChange={(event) => {
                                             this.setState({extractorName: event.target.value})
                                         }}

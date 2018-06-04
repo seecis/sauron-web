@@ -22,7 +22,7 @@ class Landing extends React.Component<any, any> {
             return;
         }
 
-        this.props.history.push('/page/' + url);
+        this.props.history.push('/page/' + encodeURIComponent(url));
     };
 
     render() {
