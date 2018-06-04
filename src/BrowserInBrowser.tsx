@@ -1,5 +1,5 @@
 import * as React from "react"
-import Extractor from "./models"
+import Query from "./models"
 import ExtractorLayoutBox from "./ExtractorLayoutBox"
 import {DetailedHTMLProps} from "react";
 import {DocumentFetcher} from "./DocumentFetcher"
@@ -11,7 +11,7 @@ interface ExtractorWindowProps {
     url: string;
     hoverQuery: string | null;
     style: DetailedHTMLProps<any, any>
-    onNewExtractor: (ex: Extractor) => void
+    onNewExtractor: (ex: Query) => void
 }
 
 class Point {
@@ -115,7 +115,7 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             this.p = new Pathfinder(this.getSubDocumentRoot().body);
         }
         let path = this.p.findUntilRoot(this.selectedElement);
-        this.props.onNewExtractor(new Extractor(path));
+        this.props.onNewExtractor(new Query(path));
     };
 
     translateCoordinates = (e: React.MouseEvent<HTMLElement>): Point => {

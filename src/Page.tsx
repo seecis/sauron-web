@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
 import * as React from 'react';
-import Extractor from './models'
+import Query from './models'
 import ExtractorModule from "./ExtractorModule";
 import BrowserInBrowser from "./BrowserInBrowser";
 import {AxiosStatic} from 'axios';
@@ -19,7 +19,7 @@ interface PageProps {
 
 
 class Page extends React.Component<PageProps, any> {
-    handleNewExtractor = (ex: Extractor) => {
+    handleNewExtractor = (ex: Query) => {
         this.setState(state => {
             return {extractors: [...state.extractors, ex]}
         });
@@ -42,6 +42,7 @@ class Page extends React.Component<PageProps, any> {
             <aside>
                 <ExtractorModule extractors={this.state.extractors}
                                  onHoverSet={(q) => this.setState({hoverQuery: q})}
+                                 url={'http://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
                                  width={"420px"}/>
             </aside>
             <main>

@@ -11,12 +11,11 @@ import DeleteIcon from "@material-ui/icons/Delete"
 import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions"
 import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton';
-import Extractor from './models'
-import {ExtractorModuleProps} from "./ExtractorModule";
+import Query from './models'
 
 interface ExtractorListProps {
-    extractorResolver: (ex: Extractor) => string,
-    extractors: Array<Extractor>,
+    extractorResolver: (ex: Query) => string,
+    extractors: Array<Query>,
     parentValue: string,
     onListItemHover: (string) => any
     depth: number;
@@ -59,7 +58,7 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
             <React.Fragment>
                 <List style={{padding: "8px"}}>
                     {
-                        Array.from(this.state.extractors.map((ex: Extractor, index: number) => {
+                        Array.from(this.state.extractors.map((ex: Query, index: number) => {
                             return <ExtractorView
                                 expanded={this.state.expanded === index}
                                 index={index + 1}
@@ -85,31 +84,31 @@ interface ExtractorExpansionPanelProps {
     expanded?: boolean | undefined
     index: number
     depth: number
-    extractor: Extractor
+    extractor: Query
     onChange: (event: ChangeEvent<{}>, expanded: boolean | number) => void
-    extractorResolver: (ex: Extractor) => string
+    extractorResolver: (ex: Query) => string
     parentValue: string
 }
 
 class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
     handleMouseOver = (event) => {
         event.preventDefault();
-        this.hoverCallback(this.extractor.path);
+        this.hoverCallback(this.extractor.selector);
     };
 
     childHover = (path: string) => {
-        this.hoverCallback(this.extractor.path + " > " + path)
+        this.hoverCallback(this.extractor.selector + " > " + path)
     };
 
     addSubQuery = () => {
         this.setState(state => {
-            state.childExtractors.push(new Extractor("a"));
+            state.childExtractors.push(new Query("a"));
             state.expanded = state.childExtractors.length - 1;
             return state;
         });
     };
 
-    private extractor: Extractor;
+    private extractor: Query;
     private hoverCallback: (string) => any;
     private onChangeCallback: (event: React.ChangeEvent<{}>, expanded: (boolean | number)) => void;
 
