@@ -19,7 +19,24 @@ interface PageProps {
 
 
 class Page extends React.Component<PageProps, any> {
+
+    private dom: Document;
+
     handleNewExtractor = (ex: Query) => {
+        let extractors = this.state.extractors;
+
+        let newElement = this.dom.querySelector(ex.selector);
+
+        extractors.map((extractor: Query) => {
+            let savedElement = this.dom.querySelector(extractor.selector);
+
+            if (savedElement != null && newElement != null && savedElement.contains(newElement)) {
+                extractor.subQueries.push(ex);
+                this.setState({extractors: extractors});
+                return;
+            }
+        });
+
         this.setState(state => {
             return {extractors: [...state.extractors, ex]}
         });
@@ -56,6 +73,9 @@ class Page extends React.Component<PageProps, any> {
                     url={'http://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
                     onNewExtractor={this.handleNewExtractor}
                     hoverQuery={this.state.hoverQuery}
+                    onGetSubDocumentRoot={(dom: Document) => {
+                        this.dom = dom;
+                    }}
                 />
             </main>
         </div>

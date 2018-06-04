@@ -12,6 +12,7 @@ interface ExtractorWindowProps {
     hoverQuery: string | null;
     style: DetailedHTMLProps<any, any>
     onNewExtractor: (ex: Query) => void
+    onGetSubDocumentRoot: (dom: Document) => void
 }
 
 class Point {
@@ -41,7 +42,9 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             return null;
         }
 
-        return frame.contentDocument;
+        let contentDocument = frame.contentDocument;
+        this.props.onGetSubDocumentRoot(contentDocument);
+        return contentDocument;
     };
     getHitRef = () => {
         let contentDocument = this.getSubDocumentRoot();
@@ -111,7 +114,7 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             return;
         }
 
-        if(this.p == null){
+        if (this.p == null) {
             this.p = new Pathfinder(this.getSubDocumentRoot().body);
         }
         let path = this.p.findUntilRoot(this.selectedElement);
