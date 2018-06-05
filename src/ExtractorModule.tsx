@@ -27,7 +27,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
     createEmptyExtractor = () => {
         this.setState(state => {
             return {
-                extractors: [...state.extractors, {}],
+                extractors: [...state.extractors, new Query("")],
                 expanded: state.extractors.length - 1
             }
         })

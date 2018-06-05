@@ -55,7 +55,8 @@ class Page extends React.Component<PageProps, any> {
     constructor(props) {
         super(props);
         this.state = {
-            extractors: []
+            extractors: [],
+            hoverQuery: ''
         }
     }
 
@@ -92,6 +93,7 @@ class Page extends React.Component<PageProps, any> {
 
 class Fetcher implements DocumentFetcher {
     async fetch(url: string) {
+        // return axios.get('http://192.168.1.83:8050/render.html?url=' + url + '&js_source=' + 'document.base = "https://www.amazon.com/')
         return axios.get('http://localhost:9092/proxy?url=' + url)
             .then(function (response) {
                 return response.data;
