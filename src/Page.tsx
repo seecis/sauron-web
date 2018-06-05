@@ -27,19 +27,24 @@ class Page extends React.Component<PageProps, any> {
 
         let newElement = this.dom.querySelector(ex.selector);
 
+        // todo: fix contains = true stuff later
+        let contains = false;
         extractors.map((extractor: Query) => {
             let savedElement = this.dom.querySelector(extractor.selector);
 
             if (savedElement != null && newElement != null && savedElement.contains(newElement)) {
                 extractor.subQueries.push(ex);
                 this.setState({extractors: extractors});
-                return;
+                contains = true;
             }
         });
 
-        this.setState(state => {
-            return {extractors: [...state.extractors, ex]}
-        });
+        if (!contains) {
+            this.setState(state => {
+                return {extractors: [...state.extractors, ex]}
+            });
+        }
+
     };
 
 
@@ -56,7 +61,7 @@ class Page extends React.Component<PageProps, any> {
 
     render() {
 
-        const url = decodeURIComponent(this.props.match.url.replace('/page/',''));
+        const url = decodeURIComponent(this.props.match.url.replace('/page/', ''));
 
         return <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
             <aside>
