@@ -8,6 +8,7 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button"
 import List from "@material-ui/core/List"
 import DeleteIcon from "@material-ui/icons/Delete"
+import CheckIcon from '@material-ui/icons/Check';
 import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions"
 import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton';
@@ -73,6 +74,8 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                 extractorResolver={this.props.extractorResolver}
                                 onExtracorLabelChange={() => {
                                 }}
+                                onEditComplete={() => {
+                                }}
                                 onCheckedChange={(isChecked: boolean) => {
                                     this.state.extractors[index].forEachChildren = isChecked;
                                     this.setState({extractors: this.state.extractors});
@@ -98,6 +101,7 @@ interface ExtractorExpansionPanelProps {
     onExtracorLabelChange: (string, Query) => void
     parentValue: string
     onCheckedChange: (isChecked: boolean) => void
+    onEditComplete: () => void
 }
 
 class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
@@ -111,11 +115,11 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
     };
 
     addSubQuery = () => {
-        this.setState(state => {
-            state.childExtractors.push(new Query("a"));
-            state.expanded = state.childExtractors.length - 1;
-            return state;
-        });
+        // this.setState(state => {
+        //     state.childExtractors.push(new Query("a"));
+        //     state.expanded = state.childExtractors.length - 1;
+        //     return state;
+        // });
     };
 
     handleLabelChange = (event) => {
@@ -134,7 +138,11 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
         this.hoverCallback = props.hoverCallback;
         this.onChangeCallback = props.onChange;
         this.extractor = props.extractor;
-        this.state = {childExtractors: props.extractor.subQueries, isChecked: false};
+        this.state = {
+            childExtractors: props.extractor.subQueries,
+            isChecked: false,
+            isOnEditMode: false
+        };
     }
 
     render() {
@@ -149,11 +157,19 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
             <><ExpansionPanel onChange={props.onChange} expanded={props.expanded} onMouseOver={this.handleMouseOver}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon/>}>
                     <Grid container justify="space-between" alignItems="center">
-                        <Grid item xs={2}>
+                        <Grid item xs={3}>
                             <Typography>{name}</Typography>
                         </Grid>
                         <Grid item xs={2}>
-                            <IconButton onClick={this.props.onDelete}><DeleteIcon/></IconButton>
+                            {
+                                this.state.isOnEditMode ?
+                                    <IconButton onClick={() => {
+                                        this.props.onEditComplete();
+                                        this.setState({isOnEditMode: false});
+                                    }}><CheckIcon/></IconButton>
+                                    :
+                                    <IconButton onClick={this.props.onDelete}><DeleteIcon/></IconButton>
+                            }
                         </Grid>
                     </Grid>
 
@@ -192,11 +208,14 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
                         extractors={childExtractors}
                         depth={depth + 1}
                         parentValue={name}
-                        extractorResolver={this.props.extractorResolver}/>
+                        extractorResolver={this.props.extractorResolver}
+                    />
                 </ExpansionPanelDetails>
                 <ExpansionPanelActions>
-                    {depth > 2 ? null : (<Button onClick={this.addSubQuery}>Add Subquery</Button>)}
-                    <Button onClick={this.props.onDelete}>Delete</Button>
+                    {depth > 2 ? null : (<Button onClick={() => {
+                        this.addSubQuery();
+                        this.setState({isOnEditMode: true});
+                    }}>Add Subquery</Button>)}
                 </ExpansionPanelActions>
             </ExpansionPanel></>
         )

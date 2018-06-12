@@ -10,6 +10,7 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/Expan
 import ExpandMore from "@material-ui/icons/ExpandMore";
 import TextField from "@material-ui/core/TextField/TextField";
 import Grid from "@material-ui/core/Grid/Grid";
+import Typography from "@material-ui/core/Typography/Typography";
 
 export interface ExtractorModuleProps {
     extractors: Array<Query>
@@ -64,6 +65,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
 
     render() {
         const {onHoverSet} = this.props;
+        const extractors = this.state.extractors;
 
         function testCode(path) {
             onHoverSet(path);
@@ -77,28 +79,43 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                         <ExpansionPanelDetails>
                             <Grid container>
                                 <Grid item xs={12}>
-                                    <TextField
-                                        value={this.state.extractorName}
-                                        onChange={(event) => {
-                                            this.setState({extractorName: event.target.value})
-                                        }}
-                                        label={'Extractor Name'}
-                                    />
+                                    {
+                                        extractors.length > 0 ?
+                                            <TextField
+                                                value={this.state.extractorName}
+                                                onChange={(event) => {
+                                                    this.setState({extractorName: event.target.value})
+                                                }}
+                                                label={'Extractor Name'}
+                                            />
+                                            :
+                                            null
+                                    }
                                 </Grid>
                                 <Grid item xs={12} style={{marginTop: 20}}>
-                                    <ExtractorList
-                                        extractors={this.state.extractors}
-                                        onListItemHover={testCode}
-                                        extractorResolver={this.resolver}
-                                        parentValue={""}
-                                        depth={0}
-                                    />
+                                    {
+                                        extractors.length > 0 ?
+                                            <ExtractorList
+                                                extractors={extractors}
+                                                onListItemHover={testCode}
+                                                extractorResolver={this.resolver}
+                                                parentValue={""}
+                                                depth={0}
+                                            />
+                                            :
+                                            <Typography>Please Select From Right</Typography>
+                                    }
                                 </Grid>
                             </Grid>
                         </ExpansionPanelDetails>
                         <ExpansionPanelActions>
-                            <Button onClick={this.createEmptyExtractor}>New extractor</Button>
-                            <Button onClick={this.saveExtractors}>Save</Button>
+                            {/*<Button onClick={this.createEmptyExtractor}>New extractor</Button>*/}
+                            {
+                                extractors.length > 0 ?
+                                    <Button onClick={this.saveExtractors}>Save</Button>
+                                    :
+                                    null
+                            }
                         </ExpansionPanelActions>
                     </ExpansionPanel>
                 </div>
