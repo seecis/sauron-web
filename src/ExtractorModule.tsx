@@ -35,6 +35,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
 
     // todo: extractor'a url eklensin this.props.url
     saveExtractors = () => {
+        console.log(this.state.extractors);
         axios.put('http://192.168.1.83:9091/extractor', {
             name: this.state.extractorName,
             queries: this.state.extractors

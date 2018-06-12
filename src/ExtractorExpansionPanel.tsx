@@ -12,6 +12,8 @@ import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions"
 import Grid from "@material-ui/core/Grid"
 import IconButton from '@material-ui/core/IconButton';
 import Query from './models'
+import Checkbox from "@material-ui/core/Checkbox/Checkbox";
+import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabel";
 
 interface ExtractorListProps {
     extractorResolver: (ex: Query) => string,
@@ -71,6 +73,10 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                 extractorResolver={this.props.extractorResolver}
                                 onExtracorLabelChange={() => {
                                 }}
+                                onCheckedChange={(isChecked: boolean) => {
+                                    this.state.extractors[index].forEachChildren = isChecked;
+                                    this.setState({extractors: this.state.extractors});
+                                }}
                             />
                         }))
                     }
@@ -91,6 +97,7 @@ interface ExtractorExpansionPanelProps {
     extractorResolver: (ex: Query) => string
     onExtracorLabelChange: (string, Query) => void
     parentValue: string
+    onCheckedChange: (isChecked: boolean) => void
 }
 
 class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
@@ -127,7 +134,7 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
         this.hoverCallback = props.hoverCallback;
         this.onChangeCallback = props.onChange;
         this.extractor = props.extractor;
-        this.state = {childExtractors: props.extractor.subQueries};
+        this.state = {childExtractors: props.extractor.subQueries, isChecked: false};
     }
 
     render() {
@@ -158,6 +165,20 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
                         defaultValue={"Label " + props.index}
                         value={this.extractor.name}
                         onChange={this.handleLabelChange}
+                    />
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={this.state.isChecked}
+                                onChange={() => {
+                                    this.setState({isChecked: !this.state.isChecked});
+                                    this.props.onCheckedChange(!this.state.isChecked);
+                                }}
+                            />
+                        }
+                        label="Select every child of this element"
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
