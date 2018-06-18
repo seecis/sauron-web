@@ -17,7 +17,6 @@ import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabel";
 
 interface ExtractorListProps {
-    extractorResolver: (ex: Query) => string,
     extractors: Array<Query>,
     parentValue: string,
     onListItemHover: (string) => any
@@ -71,7 +70,6 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                 onDelete={this.handleDelete(index)}
                                 parentValue={this.parentValue}
                                 hoverCallback={this.onListItemHover}
-                                extractorResolver={this.props.extractorResolver}
                                 onExtracorLabelChange={() => {
                                 }}
                                 onEditComplete={() => {
@@ -97,7 +95,6 @@ interface ExtractorExpansionPanelProps {
     depth: number
     extractor: Query
     onChange: (event: ChangeEvent<{}>, expanded: boolean | number) => void
-    extractorResolver: (ex: Query) => string
     onExtracorLabelChange: (string, Query) => void
     parentValue: string
     onCheckedChange: (isChecked: boolean) => void
@@ -198,17 +195,11 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
-                    <Typography>
-                        {this.props.extractorResolver(this.extractor)}
-                    </Typography>
-                </ExpansionPanelDetails>
-                <ExpansionPanelDetails>
                     <ExtractorList
                         onListItemHover={this.childHover}
                         extractors={childExtractors}
                         depth={depth + 1}
                         parentValue={name}
-                        extractorResolver={this.props.extractorResolver}
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelActions>

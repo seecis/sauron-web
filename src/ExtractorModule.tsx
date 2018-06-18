@@ -20,19 +20,6 @@ export interface ExtractorModuleProps {
 }
 
 class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
-    resolver = (e: Query) => {
-        // Todo: implement this.
-        return ""
-    };
-
-    createEmptyExtractor = () => {
-        this.setState(state => {
-            return {
-                extractors: [...state.extractors, new Query("")],
-                expanded: state.extractors.length - 1
-            }
-        })
-    };
 
     // todo: extractor'a url eklensin this.props.url
     saveExtractors = () => {
@@ -98,7 +85,6 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                                             <ExtractorList
                                                 extractors={extractors}
                                                 onListItemHover={testCode}
-                                                extractorResolver={this.resolver}
                                                 parentValue={""}
                                                 depth={0}
                                             />
