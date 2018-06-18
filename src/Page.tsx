@@ -56,7 +56,8 @@ class Page extends React.Component<PageProps, any> {
         super(props);
         this.state = {
             extractors: [],
-            hoverQuery: ''
+            hoverQuery: '',
+            editAddress: null
         }
     }
 
@@ -69,7 +70,12 @@ class Page extends React.Component<PageProps, any> {
                 <ExtractorModule extractors={this.state.extractors}
                                  onHoverSet={(q) => this.setState({hoverQuery: q})}
                                  url={url}
-                                 width={"420px"}/>
+                                 width={"420px"}
+                                 onEditAddressSet={(address: string | null) => {
+                                     this.setState({editAddress: address})
+                                 }}
+                                 editAddress={this.state.editAddress}
+                />
             </aside>
             <main>
                 <BrowserInBrowser

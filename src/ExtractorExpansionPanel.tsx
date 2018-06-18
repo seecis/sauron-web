@@ -21,6 +21,8 @@ interface ExtractorListProps {
     parentValue: string,
     onListItemHover: (string) => any
     depth: number;
+    onEditAddressSet: (address: string | null) => void
+    editAddress: string | null
 }
 
 class ExtractorList extends React.Component<ExtractorListProps, any> {
@@ -78,6 +80,9 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                     this.state.extractors[index].forEachChildren = isChecked;
                                     this.setState({extractors: this.state.extractors});
                                 }}
+                                address={(this.parentValue ? (this.parentValue + ".") : "") + (index + 1)}
+                                onEditAddressSet={this.props.onEditAddressSet}
+                                editAddress={this.props.editAddress}
                             />
                         }))
                     }
@@ -99,6 +104,9 @@ interface ExtractorViewProps {
     parentValue: string
     onCheckedChange: (isChecked: boolean) => void
     onEditComplete: () => void
+    address: string
+    onEditAddressSet: (address: string | null) => void
+    editAddress: string | null
 }
 
 class ExtractorView extends React.Component<ExtractorViewProps, any> {
@@ -138,7 +146,6 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
         this.state = {
             childExtractors: props.extractor.subQueries,
             isChecked: false,
-            isOnEditMode: false
         };
     }
 
@@ -148,6 +155,7 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
         const {childExtractors} = this.state;
         const parentValue = props.parentValue ? props.parentValue : "";
         let name = (parentValue ? (parentValue + ".") : "Query ") + props.index;
+        let address = this.props.address;
 
         return depth > 3 ? (null) : (
             //self
@@ -159,10 +167,10 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
                         </Grid>
                         <Grid item xs={2}>
                             {
-                                this.state.isOnEditMode ?
+                                address === this.props.editAddress ?
                                     <IconButton onClick={() => {
                                         this.props.onEditComplete();
-                                        this.setState({isOnEditMode: false});
+                                        this.props.onEditAddressSet(null);
                                     }}><CheckIcon/></IconButton>
                                     :
                                     <IconButton onClick={this.props.onDelete}><DeleteIcon/></IconButton>
@@ -200,12 +208,15 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
                         extractors={childExtractors}
                         depth={depth + 1}
                         parentValue={name}
+                        // todo: buraya bakıcaz
+                        onEditAddressSet={this.props.onEditAddressSet}
+                        editAddress={this.props.editAddress}
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelActions>
                     {depth > 2 ? null : (<Button onClick={() => {
                         this.addSubQuery();
-                        this.setState({isOnEditMode: true});
+                        this.props.onEditAddressSet(address);
                     }}>Add Subquery</Button>)}
                 </ExpansionPanelActions>
             </ExpansionPanel></>

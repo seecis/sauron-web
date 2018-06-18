@@ -17,6 +17,8 @@ export interface ExtractorModuleProps {
     onHoverSet: (any) => any
     width: string
     url: string
+    onEditAddressSet: (address: string | null) => void
+    editAddress: string | null
 }
 
 class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
@@ -87,6 +89,8 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                                                 onListItemHover={testCode}
                                                 parentValue={""}
                                                 depth={0}
+                                                onEditAddressSet={this.props.onEditAddressSet}
+                                                editAddress={this.props.editAddress}
                                             />
                                             :
                                             <Typography>Please Select From Right</Typography>
