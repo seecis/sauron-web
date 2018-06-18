@@ -87,7 +87,7 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
     }
 }
 
-interface ExtractorExpansionPanelProps {
+interface ExtractorViewProps {
     hoverCallback: (string) => any
     onDelete: (number) => any
     expanded?: boolean | undefined
@@ -101,7 +101,7 @@ interface ExtractorExpansionPanelProps {
     onEditComplete: () => void
 }
 
-class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
+class ExtractorView extends React.Component<ExtractorViewProps, any> {
     handleMouseOver = (event) => {
         event.preventDefault();
         this.hoverCallback(this.extractor.selector);
@@ -130,7 +130,7 @@ class ExtractorView extends React.Component<ExtractorExpansionPanelProps, any> {
     private hoverCallback: (string) => any;
     private onChangeCallback: (event: React.ChangeEvent<{}>, expanded: (boolean | number)) => void;
 
-    constructor(props: ExtractorExpansionPanelProps) {
+    constructor(props: ExtractorViewProps) {
         super(props);
         this.hoverCallback = props.hoverCallback;
         this.onChangeCallback = props.onChange;
