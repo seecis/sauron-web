@@ -23,21 +23,31 @@ class Page extends React.Component<PageProps, any> {
     private dom: Document;
 
     handleNewExtractor = (ex: Query) => {
-        let extractors = this.state.extractors;
-
+        let extractors: Query[] = this.state.extractors;
+        let editAddress = this.state.editAddress ? this.state.editAddress.replace('Query ','') : null;
         let newElement = this.dom.querySelector(ex.selector);
 
         // todo: fix contains = true stuff later
         let contains = false;
-        extractors.map((extractor: Query) => {
-            let savedElement = this.dom.querySelector(extractor.selector);
+        if (editAddress != null) {
+            let editAddressSplit: number[] = [];
+            editAddress.split('.').map((address: string) => {
+                editAddressSplit.push(parseInt(address) - 1);
+            });
+
+            let query = extractors[editAddressSplit[0]];
+            editAddressSplit.shift();
+
+            let queryBeingEdited = this.getEditedQuery(query, editAddressSplit);
+
+            let savedElement = this.dom.querySelector(queryBeingEdited.selector);
 
             if (savedElement != null && newElement != null && savedElement.contains(newElement)) {
-                extractor.subQueries.push(ex);
+                queryBeingEdited.subQueries.push(ex);
                 this.setState({extractors: extractors});
                 contains = true;
             }
-        });
+        }
 
         if (!contains) {
             this.setState(state => {
@@ -47,6 +57,13 @@ class Page extends React.Component<PageProps, any> {
 
     };
 
+    getEditedQuery(topQuery: Query, addressList: number[]): Query {
+        let result: Query = topQuery;
+        for (let i = 0; i < addressList.length; i++) {
+            result = result.subQueries[addressList[i]];
+        }
+        return result;
+    }
 
     setState<K extends keyof any>(state: any, callback?: () => void): void {
         super.setState(state, callback);
