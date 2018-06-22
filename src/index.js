@@ -14,6 +14,7 @@ import * as axios from "axios";
 import Landing from "./Landing/Landing";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Page from "./Page";
+import ResultsPage from './Results/ResultsPage';
 import Grid from '@material-ui/core/Grid/Grid';
 
 const cache = setupCache(/* options */);
@@ -36,6 +37,7 @@ ReactDOM.render(
             <Router>
                 <div>
                     <Route path={'/page/:url'} component={() => <Page api={api}/>}/>
+                    <Route exact path={'/results'} component={() => <ResultsPage/>}/>
                     <Grid container style={{flexGrow: 1}}>
                         <Grid item md={1} lg={2}/>
                         <Grid item xs={12} md={10} lg={8}>
