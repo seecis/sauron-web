@@ -11,7 +11,7 @@ import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Paper from "@material-ui/core/Paper/Paper";
 import {Extractor} from "../Extractor";
 import Query from "../models";
-import ExtractorModule from "../ExtractorModule";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 
 class ResultsPage extends React.Component<any, any> {
 
@@ -78,18 +78,40 @@ class ResultsPage extends React.Component<any, any> {
                         <Grid item xs={4}/>
                         <Grid item xs={4}>
                             {(selectedExtractor == null ?
-                                (extractorList == null ?
-                                        <Typography>Nothing Found :(</Typography>
-                                        :
-                                        <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
-                                            select from left</b></Typography>
-                                )
-                                :
-                                <ExtractorModule editAddress={null} onEditAddressSet={() => {
-                                }} extractors={selectedExtractor.queries} url={''} onHoverSet={() => {
-                                }} width={'420px'}/>
-                            )
-                            }
+                                    (extractorList == null ?
+                                            <Typography>Nothing Found :(</Typography>
+                                            :
+                                            <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                                select from left</b></Typography>
+                                    )
+                                    :
+
+                                    <ExpansionPanel>
+                                        <ExpansionPanelSummary expandIcon={<ExpandMore/>}
+                                                               key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
+
+                                        <ExpansionPanelDetails>
+                                            <Grid container>
+                                                <Grid item xs={12}>
+                                                    {
+                                                        selectedExtractor.queries.map((query: Query) => {
+                                                            return (
+                                                                <ExpansionPanel key={query.name}>
+                                                                    <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
+                                                                        <Typography>{query.name}</Typography>
+                                                                    </ExpansionPanelSummary>
+                                                                    <ExpansionPanelDetails>
+                                                                        <Typography>{query.selector}</Typography>
+                                                                    </ExpansionPanelDetails>
+                                                                </ExpansionPanel>
+                                                            );
+                                                        })
+                                                    }
+                                                </Grid>
+                                            </Grid>
+                                        </ExpansionPanelDetails>
+                                    </ExpansionPanel>
+                            )}
                         </Grid>
                     </Grid>
                 </Grid>
