@@ -11,6 +11,7 @@ import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Paper from "@material-ui/core/Paper/Paper";
 import {Extractor} from "../Extractor";
 import Query from "../models";
+import ExtractorModule from "../ExtractorModule";
 
 class ResultsPage extends React.Component<any, any> {
 
@@ -80,18 +81,14 @@ class ResultsPage extends React.Component<any, any> {
                                 (extractorList == null ?
                                         <Typography>Nothing Found :(</Typography>
                                         :
-                                        <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please select from left</b></Typography>
+                                        <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                            select from left</b></Typography>
                                 )
                                 :
-                                selectedExtractor.queries.map((query: Query) => {
-                                    return (
-                                        <ExpansionPanel key={query.name}>
-                                            <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
-                                                {query.name}
-                                            </ExpansionPanelSummary>
-                                        </ExpansionPanel>
-                                    );
-                                }))
+                                <ExtractorModule editAddress={null} onEditAddressSet={() => {
+                                }} extractors={selectedExtractor.queries} url={''} onHoverSet={() => {
+                                }} width={'420px'}/>
+                            )
                             }
                         </Grid>
                     </Grid>
