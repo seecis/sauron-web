@@ -4,6 +4,7 @@ import ExtractorLayoutBox from "./ExtractorLayoutBox"
 import {DetailedHTMLProps} from "react";
 import {DocumentFetcher} from "./DocumentFetcher"
 import "./DocumentFetcher";
+import './page.scss';
 import {default as Pathfinder} from "./Pathfinder";
 
 interface ExtractorWindowProps {
