@@ -13,6 +13,17 @@ import {Extractor} from "../Extractor";
 import Query from "../models";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 
+type QueryWrapper = {
+    query: Query;
+    result: string;
+};
+
+type ExtractorWrapper = {
+    name: string;
+    id: string;
+    queries: QueryWrapper[];
+};
+
 class ResultsPage extends React.Component<any, any> {
 
     constructor(props) {
@@ -25,33 +36,43 @@ class ResultsPage extends React.Component<any, any> {
     render() {
 
         let query1: Query = {
-            name: 'Query 1',
+            name: 'Full Price',
             subQueries: [],
             selector: '',
             forEachChildren: false
         };
 
         let query2: Query = {
-            name: 'Query 2',
+            name: 'Discounted',
             subQueries: [],
             selector: '',
-            forEachChildren: false
+            forEachChildren: false,
         };
 
-        let extractor1: Extractor = {
+        let queryWrapper1: QueryWrapper = {
+            query: query1,
+            result: '72.99 $'
+        };
+
+        let queryWrapper2: QueryWrapper = {
+            query: query2,
+            result: '22.99 £'
+        };
+
+        let extractor1: ExtractorWrapper = {
             name: 'Extractor 1',
-            queries: [query1, query2],
+            queries: [queryWrapper1, queryWrapper2],
             id: 'asdasd'
         };
 
-        let extractor2: Extractor = {
+        let extractor2: ExtractorWrapper = {
             name: 'Extractor 2',
-            queries: [query1, query2],
+            queries: [queryWrapper1, queryWrapper2],
             id: 'asdasdasd'
         };
 
         const extractorList = [extractor1, extractor2];
-        const selectedExtractor: Extractor = this.state.selectedExtractor;
+        const selectedExtractor: ExtractorWrapper = this.state.selectedExtractor;
         const grayBackground = '#818181';
 
         return (
@@ -59,7 +80,7 @@ class ResultsPage extends React.Component<any, any> {
                 <Grid item xs={2} style={{backgroundColor: grayBackground}}>
                     <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
                         <List style={{marginTop: 20}}>
-                            {extractorList.map((extractor: Extractor) => {
+                            {extractorList.map((extractor: ExtractorWrapper) => {
                                 return (
                                     <ListItem key={extractor.id} button onClick={() => {
                                         this.setState({selectedExtractor: extractor})
@@ -94,14 +115,14 @@ class ResultsPage extends React.Component<any, any> {
                                             <Grid container>
                                                 <Grid item xs={12}>
                                                     {
-                                                        selectedExtractor.queries.map((query: Query) => {
+                                                        selectedExtractor.queries.map((queryWrapper: QueryWrapper) => {
                                                             return (
-                                                                <ExpansionPanel key={query.name}>
+                                                                <ExpansionPanel key={queryWrapper.query.name}>
                                                                     <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
-                                                                        <Typography>{query.name}</Typography>
+                                                                        <Typography>{queryWrapper.query.name}</Typography>
                                                                     </ExpansionPanelSummary>
                                                                     <ExpansionPanelDetails>
-                                                                        <Typography>{query.selector}</Typography>
+                                                                        <Typography>{queryWrapper.result}</Typography>
                                                                     </ExpansionPanelDetails>
                                                                 </ExpansionPanel>
                                                             );
