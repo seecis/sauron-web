@@ -3,11 +3,13 @@ class Query {
         this.name = '';
         this.forEachChildren = false;
         this.subQueries = [];
+        this.id = '';
     }
 
     public name: string;
     public forEachChildren: boolean;
     public subQueries: Query[];
+    public id: string;
 }
 
 export default Query;

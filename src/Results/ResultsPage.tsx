@@ -9,88 +9,68 @@ import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
 import Paper from "@material-ui/core/Paper/Paper";
+import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
+import axios from "axios";
 import {Extractor} from "../Extractor";
 import Query from "../models";
-import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
-
-type QueryWrapper = {
-    query: Query;
-    result: string;
-};
-
-type ExtractorWrapper = {
-    name: string;
-    id: string;
-    queries: QueryWrapper[];
-};
 
 class ResultsPage extends React.Component<any, any> {
 
     constructor(props) {
         super(props);
         this.state = {
+            extractors: null,
             selectedExtractor: null
         }
     }
 
+    getExtractors = () => {
+        axios.get('http://192.168.1.83:9091/extractor', {})
+            .then(response => {
+                this.setState({extractors: response.data})
+            })
+            .catch(error => {
+                alert(error.message);
+            });
+    };
+
+    getReport = (id: string) => {
+        axios.get('http://192.168.1.83:9091/report/' + id, {})
+            .then(response => {
+            })
+            .catch(error => {
+                console.log(error.message);
+            });
+    };
+
     render() {
 
-        let query1: Query = {
-            name: 'Full Price',
-            subQueries: [],
-            selector: '',
-            forEachChildren: false
-        };
-
-        let query2: Query = {
-            name: 'Discounted',
-            subQueries: [],
-            selector: '',
-            forEachChildren: false,
-        };
-
-        let queryWrapper1: QueryWrapper = {
-            query: query1,
-            result: '72.99 $'
-        };
-
-        let queryWrapper2: QueryWrapper = {
-            query: query2,
-            result: '22.99 £'
-        };
-
-        let extractor1: ExtractorWrapper = {
-            name: 'Extractor 1',
-            queries: [queryWrapper1, queryWrapper2],
-            id: 'asdasd'
-        };
-
-        let extractor2: ExtractorWrapper = {
-            name: 'Extractor 2',
-            queries: [queryWrapper1, queryWrapper2],
-            id: 'asdasdasd'
-        };
-
-        const extractorList = [extractor1, extractor2];
-        const selectedExtractor: ExtractorWrapper = this.state.selectedExtractor;
+        const selectedExtractor = this.state.selectedExtractor;
         const grayBackground = '#818181';
+
+        if (this.state.extractors == null) {
+            this.getExtractors();
+            return (<div></div>);
+        }
 
         return (
             <Grid container>
                 <Grid item xs={2} style={{backgroundColor: grayBackground}}>
                     <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
                         <List style={{marginTop: 20}}>
-                            {extractorList.map((extractor: ExtractorWrapper) => {
-                                return (
-                                    <ListItem key={extractor.id} button onClick={() => {
-                                        this.setState({selectedExtractor: extractor})
-                                    }}>
-                                        <ListItemText
-                                            primary={<Typography><b>{extractor.name}</b></Typography>}
-                                            secondary={'URL: ' + extractor.name}/>
-                                    </ListItem>
-                                );
-                            })}
+                            {
+                                this.state.extractors.map((extractor: Extractor) => {
+                                    return (
+                                        <ListItem key={extractor.id} button onClick={() => {
+                                            this.setState({selectedExtractor: extractor})
+                                        }}>
+                                            <ListItemText
+                                                primary={<Typography><b>{extractor.name}</b></Typography>}
+                                                secondary={'URL: ' + extractor.url}/>
+                                        </ListItem>
+                                    );
+                                })
+                            }
                         </List>
                     </Paper>
                 </Grid>
@@ -99,32 +79,33 @@ class ResultsPage extends React.Component<any, any> {
                         <Grid item xs={4}/>
                         <Grid item xs={4}>
                             {(selectedExtractor == null ?
-                                    (extractorList == null ?
-                                            <Typography>Nothing Found :(</Typography>
-                                            :
-                                            <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
-                                                select from left</b></Typography>
-                                    )
+                                    <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                        select from left</b></Typography>
                                     :
-
-                                    <ExpansionPanel>
-                                        <ExpansionPanelSummary expandIcon={<ExpandMore/>}
-                                                               key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
+                                    <ExpansionPanel expanded>
+                                        <ExpansionPanelSummary
+                                            key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
 
                                         <ExpansionPanelDetails>
                                             <Grid container>
                                                 <Grid item xs={12}>
                                                     {
-                                                        selectedExtractor.queries.map((queryWrapper: QueryWrapper) => {
+                                                        selectedExtractor.queries.map((query: Query) => {
                                                             return (
-                                                                <ExpansionPanel key={queryWrapper.query.name}>
-                                                                    <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
-                                                                        <Typography>{queryWrapper.query.name}</Typography>
-                                                                    </ExpansionPanelSummary>
-                                                                    <ExpansionPanelDetails>
-                                                                        <Typography>{queryWrapper.result}</Typography>
-                                                                    </ExpansionPanelDetails>
-                                                                </ExpansionPanel>
+                                                                <>
+                                                                    <ExpansionPanel key={query.id}>
+                                                                        <ExpansionPanelSummary
+                                                                            expandIcon={<ExpandMore/>}>
+                                                                            <Typography>{query.name}</Typography>
+                                                                        </ExpansionPanelSummary>
+                                                                    </ExpansionPanel>
+                                                                    {
+                                                                        query.subQueries == null ?
+                                                                            <div></div>
+                                                                            :
+                                                                            getQueryViews(query)
+                                                                    }
+                                                                </>
                                                             );
                                                         })
                                                     }
@@ -138,12 +119,33 @@ class ResultsPage extends React.Component<any, any> {
                 </Grid>
                 <Grid item xs={2} style={{backgroundColor: grayBackground}}>
                     <Typography style={{textAlign: 'center', color: '#FFFFFF', marginTop: 70, fontSize: 17}}>
-                        Burası Dursun</Typography>
+                        Reserved Area</Typography>
                 </Grid>
             </Grid>
 
         );
     }
+}
+
+function getQueryViews(query: Query) {
+    return query.subQueries.map((subQuery: Query) => {
+        return (
+            <>
+                <ExpansionPanel key={subQuery.id}>
+                    <ExpansionPanelSummary
+                        expandIcon={<ExpandMore/>}>
+                        <Typography>{query.name}.{subQuery.name}</Typography>
+                    </ExpansionPanelSummary>
+                </ExpansionPanel>
+                {
+                    subQuery.subQueries == null ?
+                        <div></div>
+                        :
+                        getQueryViews(subQuery)
+                }
+            </>
+        );
+    })
 }
 
 export default withRouter(ResultsPage);
