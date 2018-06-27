@@ -144,7 +144,7 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             <div style={this.props.style}>
                 <iframe
                     className={"sauron-framer"}
-                    scrolling="no"
+                    scrolling="yes"
                     id="wrapper"
                     srcDoc={this.state.u}
                     frameBorder="0"/>

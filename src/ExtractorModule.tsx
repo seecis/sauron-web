@@ -19,22 +19,25 @@ export interface ExtractorModuleProps {
     url: string
     onEditAddressSet: (address: string | null) => void
     editAddress: string | null
+    onSaveSuccess: () => void
 }
 
 class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
 
-    // todo: extractor'a url eklensin this.props.url
     saveExtractors = () => {
         console.log(this.state.extractors);
         axios.put('http://192.168.1.83:9091/extractor', {
             name: this.state.extractorName,
-            queries: this.state.extractors
+            queries: this.state.extractors,
+            trim: true,
+            url: this.props.url
         })
             .then(response => {
-                alert("Fulfilled");
+                alert("Save Successful");
+                this.props.onSaveSuccess();
             })
             .catch(error => {
-                alert("Rejected");
+                alert(error.message);
             });
     };
 

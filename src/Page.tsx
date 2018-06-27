@@ -14,7 +14,8 @@ import axios from 'axios';
 
 interface PageProps {
     api: AxiosStatic,
-    match: any
+    match: any,
+    history: any
 }
 
 
@@ -92,6 +93,7 @@ class Page extends React.Component<PageProps, any> {
                                      this.setState({editAddress: address})
                                  }}
                                  editAddress={this.state.editAddress}
+                                 onSaveSuccess={()=>{this.props.history.push("/results")}}
                 />
             </aside>
             <main>
@@ -116,8 +118,8 @@ class Page extends React.Component<PageProps, any> {
 
 class Fetcher implements DocumentFetcher {
     async fetch(url: string) {
-        // return axios.get('http://192.168.1.83:8050/render.html?url=' + url + '&js_source=' + 'document.base = "https://www.amazon.com/')
-        return axios.get('http://localhost:9092/proxy?url=' + url)
+        return axios({url: 'http://192.168.1.83:8092/new?url=' + url, maxRedirects:86})
+        // return axios.get('http://localhost:9092/proxy?url=' + url)
             .then(function (response) {
                 return response.data;
             })
