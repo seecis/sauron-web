@@ -27,7 +27,7 @@ class Landing extends React.Component<any, any> {
 
     render() {
 
-        return <>
+        return <div style={{minHeight: '100vh', paddingTop: '40%'}}>
             <Typography variant="headline">Sauron</Typography>
             <Card className={"main-card"} square={false}>
                 <CardContent className="card-content">
@@ -37,7 +37,7 @@ class Landing extends React.Component<any, any> {
                     <Button onClick={this.handleButtonClick}>Go!</Button>
                 </CardActions>
             </Card>
-        </>
+        </div>
     }
 }
 

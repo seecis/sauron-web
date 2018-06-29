@@ -14,13 +14,26 @@ import axios from "axios";
 import {Extractor} from "../Extractor";
 import Query from "../models";
 
+type Field = {
+    id: string;
+    label: string;
+    data: string;
+}
+
+type Report = {
+    id: string;
+    Field: Field;
+    FieldId: string;
+}
+
 class ResultsPage extends React.Component<any, any> {
 
     constructor(props) {
         super(props);
         this.state = {
             extractors: null,
-            selectedExtractor: null
+            selectedExtractor: null,
+            selectedReport: null
         }
     }
 
@@ -34,9 +47,14 @@ class ResultsPage extends React.Component<any, any> {
             });
     };
 
-    getReport = (id: string) => {
+    getReport = (id: string | undefined) => {
+        if (id == undefined) {
+            return;
+        }
+
         axios.get('http://192.168.1.83:9091/report/' + id, {})
             .then(response => {
+                this.setState({selectedReport: response.data});
             })
             .catch(error => {
                 console.log(error.message);
@@ -46,11 +64,13 @@ class ResultsPage extends React.Component<any, any> {
     render() {
 
         const selectedExtractor = this.state.selectedExtractor;
+        const selectedReport = this.state.selectedReport;
+
         const grayBackground = '#818181';
 
         if (this.state.extractors == null) {
             this.getExtractors();
-            return (<div></div>);
+            return null;
         }
 
         return (
@@ -62,7 +82,8 @@ class ResultsPage extends React.Component<any, any> {
                                 this.state.extractors.map((extractor: Extractor) => {
                                     return (
                                         <ListItem key={extractor.id} button onClick={() => {
-                                            this.setState({selectedExtractor: extractor})
+                                            this.setState({selectedExtractor: extractor});
+                                            this.getReport(extractor.id);
                                         }}>
                                             <ListItemText
                                                 primary={<Typography><b>{extractor.name}</b></Typography>}
@@ -75,7 +96,7 @@ class ResultsPage extends React.Component<any, any> {
                     </Paper>
                 </Grid>
                 <Grid item xs={8}>
-                    <Grid container spacing={24} style={{marginTop: 20}}>
+                    <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
                         <Grid item xs={4}/>
                         <Grid item xs={4}>
                             {(selectedExtractor == null ?
@@ -101,7 +122,7 @@ class ResultsPage extends React.Component<any, any> {
                                                                     </ExpansionPanel>
                                                                     {
                                                                         query.subQueries == null ?
-                                                                            <div></div>
+                                                                            null
                                                                             :
                                                                             getQueryViews(query)
                                                                     }
@@ -122,7 +143,6 @@ class ResultsPage extends React.Component<any, any> {
                         Reserved Area</Typography>
                 </Grid>
             </Grid>
-
         );
     }
 }
@@ -139,7 +159,7 @@ function getQueryViews(query: Query) {
                 </ExpansionPanel>
                 {
                     subQuery.subQueries == null ?
-                        <div></div>
+                        null
                         :
                         getQueryViews(subQuery)
                 }
