@@ -11,6 +11,7 @@ import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
 import axios from 'axios';
+import {TitleConsumer, TitleContext} from "./TitleContext";
 
 interface PageProps {
     api: AxiosStatic,
@@ -22,6 +23,18 @@ interface PageProps {
 class Page extends React.Component<PageProps, any> {
 
     private dom: Document;
+
+    // componentDidMount(){
+    //     TitleContext.Provider.
+    //
+    // //     return <TitleConsumer>
+    // //         {
+    // //             ({title, onTitleChange}) => {
+    // //                 onTitleChange("Create ExtractorCCCC");
+    // //             }
+    // //         }
+    // //     </TitleConsumer>
+    // }
 
     handleNewExtractor = (ex: Query) => {
         let extractors: Query[] = this.state.extractors;

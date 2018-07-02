@@ -29,6 +29,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
+import {TitleProvider} from './TitleContext';
 
 const cache = setupCache(/* options */);
 
@@ -47,7 +48,6 @@ class SauronAppBar extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            title: 'Sauron',
             drawerOpen: false
         };
     }
@@ -101,9 +101,7 @@ class SauronAppBar extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
-                            <div id={'title'}>
-                                Sauron
-                            </div>
+                            {this.props.title}
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -119,49 +117,46 @@ class App extends React.Component {
         this.state = {}
     }
 
-    // todo: burası değişcek iğrenç oldu
-    changeTitle = (title) => {
-        let element = document.getElementById("title");
-        if (element == null) {
-            return;
-        }
-        element.innerHTML = title;
-    };
-
     render() {
 
         return (
-            <Router>
-                <div>
-                    <CssBaseline/>
-                    <MuiThemeProvider theme={theme}>
-                        <SauronAppBar/>
-                        <div>
+            <div>
+                <CssBaseline/>
+                <MuiThemeProvider theme={theme}>
+                    <Router>
+                        <React.Fragment>
                             <Route path={'/page/:url'} component={() => {
-                                this.changeTitle('Create Extractor');
-                                return <Page api={api}/>
+                                return <React.Fragment>
+                                    <SauronAppBar title={'Create Extractor'}/>
+                                    <Page api={api}/>
+                                </React.Fragment>
                             }}/>
                             <Route exact path={'/results'} component={() => {
-                                this.changeTitle('Results');
-                                return <ResultsPage/>
+                                return <React.Fragment>
+                                    <SauronAppBar title={'Results'}/>
+                                    <ResultsPage/>
+                                </React.Fragment>
                             }}/>
-                            <Grid container style={{flexGrow: 1}}>
-                                <Grid item md={1} lg={2}/>
-                                <Grid item xs={12} md={10} lg={8}>
-                                    <Grid container justify={'center'}>
-                                        <Grid item>
-                                            <Route exact path={'/'} component={() => {
-                                                this.changeTitle('Sauron');
-                                                return <Landing/>
-                                            }}/>
+
+                            <Route exact path={'/'} component={() => {
+                                return <React.Fragment>
+                                    <SauronAppBar title={'Sauron'}/>
+                                    <Grid container style={{flexGrow: 1}}>
+                                        <Grid item md={1} lg={2}/>
+                                        <Grid item xs={12} md={10} lg={8}>
+                                            <Grid container justify={'center'}>
+                                                <Grid item>
+                                                    <Landing/>
+                                                </Grid>
+                                            </Grid>
                                         </Grid>
                                     </Grid>
-                                </Grid>
-                            </Grid>
-                        </div>
-                    </MuiThemeProvider>
-                </div>
-            </Router>
+                                </React.Fragment>
+                            }}/>
+                        </React.Fragment>
+                    </Router>
+                </MuiThemeProvider>
+            </div>
         );
     }
 }
