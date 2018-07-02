@@ -11,6 +11,8 @@ import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
 import axios from 'axios';
+import {Context} from "react";
+import TitleContext from "./TitleContext";
 
 interface PageProps {
     api: AxiosStatic,
@@ -25,7 +27,7 @@ class Page extends React.Component<PageProps, any> {
 
     handleNewExtractor = (ex: Query) => {
         let extractors: Query[] = this.state.extractors;
-        let editAddress = this.state.editAddress ? this.state.editAddress.replace('Query ','') : null;
+        let editAddress = this.state.editAddress ? this.state.editAddress.replace('Query ', '') : null;
         let newElement = this.dom.querySelector(ex.selector);
 
         // todo: fix contains = true stuff later
@@ -84,6 +86,7 @@ class Page extends React.Component<PageProps, any> {
         const url = decodeURIComponent(this.props.match.url.replace('/page/', ''));
 
         return <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
+            <Aasdasd/>
             <aside>
                 <ExtractorModule extractors={this.state.extractors}
                                  onHoverSet={(q) => this.setState({hoverQuery: q})}
@@ -93,7 +96,9 @@ class Page extends React.Component<PageProps, any> {
                                      this.setState({editAddress: address})
                                  }}
                                  editAddress={this.state.editAddress}
-                                 onSaveSuccess={()=>{this.props.history.push("/results")}}
+                                 onSaveSuccess={() => {
+                                     this.props.history.push("/results")
+                                 }}
                 />
             </aside>
             <main>
@@ -118,7 +123,7 @@ class Page extends React.Component<PageProps, any> {
 
 class Fetcher implements DocumentFetcher {
     async fetch(url: string) {
-        return axios({url: 'http://192.168.1.83:8092/new?url=' + url, maxRedirects:86})
+        return axios({url: 'http://192.168.1.83:8092/new?url=' + url, maxRedirects: 86})
         // return axios.get('http://localhost:9092/proxy?url=' + url)
             .then(function (response) {
                 return response.data;
@@ -126,6 +131,23 @@ class Fetcher implements DocumentFetcher {
             .catch(function (error) {
                 return error;
             });
+    }
+}
+
+class Aasdasd extends React.Component<any, Context<string>> {
+    constructor(props: any) {
+        super(props, TitleContext);
+    }
+
+    render() {
+        return (
+            <TitleContext.Consumer>
+                {
+                    a => <h1>{a}</h1>
+                }
+            </TitleContext.Consumer>
+        );
+
     }
 }
 

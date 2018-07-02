@@ -29,6 +29,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
+import TitleContext from './TitleContext';
 
 const cache = setupCache(/* options */);
 
@@ -42,14 +43,14 @@ const api = axios.create({
     adapter: cache.adapter
 });
 
-class App extends React.Component {
+class SauronAppBar extends React.Component {
 
     constructor(props) {
-        super(props);
+        super(props, TitleContext);
         this.state = {
             title: 'Sauron',
             drawerOpen: false
-        }
+        };
     }
 
     toggleDrawer = (open) => () => {
@@ -57,66 +58,83 @@ class App extends React.Component {
     };
 
     render() {
-
         const drawerItemStyle = {textDecoration: 'none', color: 'unset'};
+
+        return (
+            <div>
+                <SwipeableDrawer
+                    open={this.state.drawerOpen}
+                    onClose={this.toggleDrawer(false)}
+                    onOpen={this.toggleDrawer(true)}
+                >
+                    <div
+                        role="button"
+                        onClick={this.toggleDrawer(false)}
+                        onKeyDown={this.toggleDrawer(false)}
+                        style={{width: 250}}
+                    >
+                        <List>
+                            <Link to={'/'} style={drawerItemStyle}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <StarIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Home"/>
+                                </ListItem>
+                            </Link>
+                            <Link to={'/results'} style={drawerItemStyle}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <InboxIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Results"/>
+                                </ListItem>
+                            </Link>
+                        </List>
+                    </div>
+                </SwipeableDrawer>
+                <AppBar position="static">
+                    <Toolbar>
+                        <IconButton color="inherit" aria-label="Menu" style={{
+                            marginLeft: -12,
+                            marginRight: 20
+                        }} onClick={this.toggleDrawer(true)}>
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="title" color="inherit" style={{flex: 1}}>
+                            <TitleContext.Consumer>
+                                {title => title}
+                            </TitleContext.Consumer>
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+            </div>
+        );
+    }
+}
+
+class App extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {}
+    }
+
+    changeTitle = (title) => {
+
+    };
+
+    render() {
 
         return (
             <Router>
                 <div>
                     <CssBaseline/>
                     <MuiThemeProvider theme={theme}>
-                        <SwipeableDrawer
-                            open={this.state.drawerOpen}
-                            onClose={this.toggleDrawer(false)}
-                            onOpen={this.toggleDrawer(true)}
-                        >
-                            <div
-                                role="button"
-                                onClick={this.toggleDrawer(false)}
-                                onKeyDown={this.toggleDrawer(false)}
-                                style={{width: 250}}
-                            >
-                                <List>
-                                    <Link to={'/'} style={drawerItemStyle}>
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <StarIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Home"/>
-                                        </ListItem>
-                                    </Link>
-                                    <Link to={'/results'} style={drawerItemStyle}>
-                                        <ListItem button>
-                                            <ListItemIcon>
-                                                <InboxIcon/>
-                                            </ListItemIcon>
-                                            <ListItemText primary="Results"/>
-                                        </ListItem>
-                                    </Link>
-                                </List>
-                            </div>
-                        </SwipeableDrawer>
-                        <AppBar position="static">
-                            <Toolbar>
-                                <IconButton color="inherit" aria-label="Menu" style={{
-                                    marginLeft: -12,
-                                    marginRight: 20
-                                }} onClick={this.toggleDrawer(true)}>
-                                    <MenuIcon/>
-                                </IconButton>
-                                <Typography variant="title" color="inherit" style={{flex: 1}}>
-                                    {this.state.title}
-                                </Typography>
-                            </Toolbar>
-                        </AppBar>
+                        <SauronAppBar />
                         <div>
                             <Route path={'/page/:url'} component={() => {
-                                // todo: fix later
-                                let title = this.state.title;
-                                let desTitle = 'Create Extractor';
-                                if (title !== desTitle) {
-                                    this.setState({title: desTitle});
-                                }
+                                this.changeTitle('Create Extractor');
                                 return <Page api={api}/>
                             }}/>
                             <Route exact path={'/results'} component={() => {
