@@ -11,8 +11,6 @@ import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
 import axios from 'axios';
-import {Context} from "react";
-import TitleContext from "./TitleContext";
 
 interface PageProps {
     api: AxiosStatic,
@@ -86,7 +84,6 @@ class Page extends React.Component<PageProps, any> {
         const url = decodeURIComponent(this.props.match.url.replace('/page/', ''));
 
         return <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
-            <Aasdasd/>
             <aside>
                 <ExtractorModule extractors={this.state.extractors}
                                  onHoverSet={(q) => this.setState({hoverQuery: q})}
@@ -131,23 +128,6 @@ class Fetcher implements DocumentFetcher {
             .catch(function (error) {
                 return error;
             });
-    }
-}
-
-class Aasdasd extends React.Component<any, Context<string>> {
-    constructor(props: any) {
-        super(props, TitleContext);
-    }
-
-    render() {
-        return (
-            <TitleContext.Consumer>
-                {
-                    a => <h1>{a}</h1>
-                }
-            </TitleContext.Consumer>
-        );
-
     }
 }
 

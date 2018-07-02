@@ -29,7 +29,6 @@ import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
-import TitleContext from './TitleContext';
 
 const cache = setupCache(/* options */);
 
@@ -46,7 +45,7 @@ const api = axios.create({
 class SauronAppBar extends React.Component {
 
     constructor(props) {
-        super(props, TitleContext);
+        super(props);
         this.state = {
             title: 'Sauron',
             drawerOpen: false
@@ -102,9 +101,9 @@ class SauronAppBar extends React.Component {
                             <MenuIcon/>
                         </IconButton>
                         <Typography variant="title" color="inherit" style={{flex: 1}}>
-                            <TitleContext.Consumer>
-                                {title => title}
-                            </TitleContext.Consumer>
+                            <div id={'title'}>
+                                Sauron
+                            </div>
                         </Typography>
                     </Toolbar>
                 </AppBar>
@@ -120,8 +119,13 @@ class App extends React.Component {
         this.state = {}
     }
 
+    // todo: burası değişcek iğrenç oldu
     changeTitle = (title) => {
-
+        let element = document.getElementById("title");
+        if (element == null) {
+            return;
+        }
+        element.innerHTML = title;
     };
 
     render() {
@@ -131,19 +135,14 @@ class App extends React.Component {
                 <div>
                     <CssBaseline/>
                     <MuiThemeProvider theme={theme}>
-                        <SauronAppBar />
+                        <SauronAppBar/>
                         <div>
                             <Route path={'/page/:url'} component={() => {
                                 this.changeTitle('Create Extractor');
                                 return <Page api={api}/>
                             }}/>
                             <Route exact path={'/results'} component={() => {
-                                // todo: fix later
-                                let title = this.state.title;
-                                let desTitle = 'Results';
-                                if (title !== desTitle) {
-                                    this.setState({title: desTitle});
-                                }
+                                this.changeTitle('Results');
                                 return <ResultsPage/>
                             }}/>
                             <Grid container style={{flexGrow: 1}}>
@@ -152,12 +151,7 @@ class App extends React.Component {
                                     <Grid container justify={'center'}>
                                         <Grid item>
                                             <Route exact path={'/'} component={() => {
-                                                // todo: fix later
-                                                let title = this.state.title;
-                                                let desTitle = 'Sauron';
-                                                if (title !== desTitle) {
-                                                    this.setState({title: desTitle});
-                                                }
+                                                this.changeTitle('Sauron');
                                                 return <Landing/>
                                             }}/>
                                         </Grid>
