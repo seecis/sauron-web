@@ -5,9 +5,9 @@ RUN yarn global add webpack-cli
 WORKDIR /sauron-web
 COPY . .
 RUN yarn install --frozen-lockfile --production
-RUN yarn run webpack-cli --config webpack.config.prod.js
+RUN webpack-cli --config webpack.config.prod.js
 RUN rm node_modules -rf
 WORKDIR /sauron-web/dist
-ENTRYPOINT yarn run serve
+ENTRYPOINT serve
 EXPOSE 5000
 
