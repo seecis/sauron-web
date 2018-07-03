@@ -1,4 +1,4 @@
-FROM node
+FROM node:slim
 
 WORKDIR /sauron-web
 COPY . .
