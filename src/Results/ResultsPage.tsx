@@ -13,6 +13,7 @@ import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/Expan
 import axios from "axios";
 import {Extractor} from "../Extractor";
 import Query from "../models";
+import {EndPointProvider} from "../EndPointProvider";
 
 type Field = {
     id: string;
@@ -38,7 +39,7 @@ class ResultsPage extends React.Component<any, any> {
     }
 
     getExtractors = () => {
-        axios.get('http://192.168.1.83:9091/extractor', {})
+        axios.get(EndPointProvider.ExtractorList, {})
             .then(response => {
                 this.setState({extractors: response.data})
             })
@@ -52,7 +53,7 @@ class ResultsPage extends React.Component<any, any> {
             return;
         }
 
-        axios.get('http://192.168.1.83:9091/report/' + id, {})
+        axios.get(EndPointProvider.GetReportById(id), {})
             .then(response => {
                 this.setState({selectedReport: response.data});
             })
