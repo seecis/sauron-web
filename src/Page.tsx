@@ -133,7 +133,8 @@ class Page extends React.Component<PageProps, any> {
 
 class Fetcher implements DocumentFetcher {
     async fetch(url: string) {
-        return axios({url: 'http://192.168.1.83:8092/new?url=' + url, maxRedirects: 86})
+
+        return axios({url: 'http://proxy.sauron.amerikadaniste.com/new?url=' + url, maxRedirects: 86})
         // return axios.get('http://localhost:9092/proxy?url=' + url)
             .then(function (response) {
                 return response.data;

@@ -11,6 +11,7 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import TextField from "@material-ui/core/TextField/TextField";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
+import {EndPointProvider} from "./EndPointProvider";
 
 export interface ExtractorModuleProps {
     extractors: Array<Query>
@@ -26,7 +27,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
 
     saveExtractors = () => {
         console.log(this.state.extractors);
-        axios.put('http://192.168.1.83:9091/extractor', {
+        axios.put(EndPointProvider.ExtractorList, {
             name: this.state.extractorName,
             queries: this.state.extractors,
             trim: true,
