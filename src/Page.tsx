@@ -11,7 +11,7 @@ import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
 import axios from 'axios';
-import {TitleConsumer, TitleContext} from "./TitleContext";
+import {PathProvider} from "./PathProvider";
 
 interface PageProps {
     api: AxiosStatic,
@@ -107,7 +107,7 @@ class Page extends React.Component<PageProps, any> {
                                  }}
                                  editAddress={this.state.editAddress}
                                  onSaveSuccess={() => {
-                                     this.props.history.push("/results")
+                                     this.props.history.push(PathProvider.ExtractorList)
                                  }}
                 />
             </aside>

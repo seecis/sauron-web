@@ -14,7 +14,7 @@ import * as axios from "axios";
 import Landing from "./Landing/Landing";
 import {BrowserRouter as Router, Route} from 'react-router-dom';
 import Page from "./Page";
-import ResultsPage from './Results/ResultsPage';
+import ExtractorListPage from './ExtractorList/ExtractorListPage';
 import Grid from '@material-ui/core/Grid/Grid';
 import AppBar from '@material-ui/core/AppBar/AppBar';
 import Toolbar from '@material-ui/core/Toolbar/Toolbar';
@@ -29,7 +29,7 @@ import ListItemIcon from '@material-ui/core/ListItemIcon/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
-import {TitleProvider} from './TitleContext';
+import {PathProvider} from "./PathProvider";
 
 const cache = setupCache(/* options */);
 
@@ -73,7 +73,7 @@ class SauronAppBar extends React.Component {
                         style={{width: 250}}
                     >
                         <List>
-                            <Link to={'/'} style={drawerItemStyle}>
+                            <Link to={PathProvider.Home} style={drawerItemStyle}>
                                 <ListItem button>
                                     <ListItemIcon>
                                         <StarIcon/>
@@ -81,12 +81,12 @@ class SauronAppBar extends React.Component {
                                     <ListItemText primary="Home"/>
                                 </ListItem>
                             </Link>
-                            <Link to={'/results'} style={drawerItemStyle}>
+                            <Link to={PathProvider.ExtractorList} style={drawerItemStyle}>
                                 <ListItem button>
                                     <ListItemIcon>
                                         <InboxIcon/>
                                     </ListItemIcon>
-                                    <ListItemText primary="Results"/>
+                                    <ListItemText primary="Saved Extractors"/>
                                 </ListItem>
                             </Link>
                         </List>
@@ -131,14 +131,14 @@ class App extends React.Component {
                                     <Page api={api}/>
                                 </React.Fragment>
                             }}/>
-                            <Route exact path={'/results'} component={() => {
+                            <Route exact path={PathProvider.ExtractorList} component={() => {
                                 return <React.Fragment>
-                                    <SauronAppBar title={'Results'}/>
-                                    <ResultsPage/>
+                                    <SauronAppBar title={'Extractors'}/>
+                                    <ExtractorListPage/>
                                 </React.Fragment>
                             }}/>
 
-                            <Route exact path={'/'} component={() => {
+                            <Route exact path={PathProvider.Home} component={() => {
                                 return <React.Fragment>
                                     <SauronAppBar title={'Sauron'}/>
                                     <Grid container style={{flexGrow: 1}}>

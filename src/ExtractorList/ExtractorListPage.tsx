@@ -27,7 +27,7 @@ type Report = {
     FieldId: string;
 }
 
-class ResultsPage extends React.Component<any, any> {
+class ExtractorListPage extends React.Component<any, any> {
 
     constructor(props) {
         super(props);
@@ -169,4 +169,4 @@ function getQueryViews(query: Query) {
     })
 }
 
-export default withRouter(ResultsPage);
+export default withRouter(ExtractorListPage);
