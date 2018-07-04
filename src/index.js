@@ -30,6 +30,7 @@ import ListItemText from '@material-ui/core/ListItemText/ListItemText';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
 import {PathProvider} from "./PathProvider";
+import ReportsPage from './Reports/ReportsPage';
 
 const cache = setupCache(/* options */);
 
@@ -72,7 +73,7 @@ class SauronAppBar extends React.Component {
                         onKeyDown={this.toggleDrawer(false)}
                         style={{width: 250}}
                     >
-                        <List>
+                        <List style={{marginTop: 30}}>
                             <Link to={PathProvider.Home} style={drawerItemStyle}>
                                 <ListItem button>
                                     <ListItemIcon>
@@ -87,6 +88,14 @@ class SauronAppBar extends React.Component {
                                         <InboxIcon/>
                                     </ListItemIcon>
                                     <ListItemText primary="Saved Extractors"/>
+                                </ListItem>
+                            </Link>
+                            <Link to={PathProvider.Reports} style={drawerItemStyle}>
+                                <ListItem button>
+                                    <ListItemIcon>
+                                        <InboxIcon/>
+                                    </ListItemIcon>
+                                    <ListItemText primary="Reports"/>
                                 </ListItem>
                             </Link>
                         </List>
@@ -135,6 +144,13 @@ class App extends React.Component {
                                 return <React.Fragment>
                                     <SauronAppBar title={'Extractors'}/>
                                     <ExtractorListPage/>
+                                </React.Fragment>
+                            }}/>
+
+                            <Route exact path={PathProvider.Reports} component={() => {
+                                return <React.Fragment>
+                                    <SauronAppBar title={'Reports'}/>
+                                    <ReportsPage/>
                                 </React.Fragment>
                             }}/>
 

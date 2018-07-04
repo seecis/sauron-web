@@ -14,18 +14,13 @@ import axios from "axios";
 import {Extractor} from "../Extractor";
 import Query from "../models";
 import {EndPointProvider} from "../EndPointProvider";
-
-type Field = {
-    id: string;
-    label: string;
-    data: string;
-}
-
-type Report = {
-    id: string;
-    Field: Field;
-    FieldId: string;
-}
+import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions/ExpansionPanelActions";
+import Button from "@material-ui/core/Button/Button";
+import {PathProvider} from "../PathProvider";
+import Dialog from "@material-ui/core/Dialog/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions/DialogActions";
 
 class ExtractorListPage extends React.Component<any, any> {
 
@@ -34,7 +29,8 @@ class ExtractorListPage extends React.Component<any, any> {
         this.state = {
             extractors: null,
             selectedExtractor: null,
-            selectedReport: null
+            selectedReport: null,
+            successDialogOpen: false
         }
     }
 
@@ -48,24 +44,22 @@ class ExtractorListPage extends React.Component<any, any> {
             });
     };
 
-    getReport = (id: string | undefined) => {
-        if (id == undefined) {
+    scheduleExtraction(extractorId: string | undefined, url: string | undefined) {
+        if (extractorId == null || url == null) {
             return;
         }
 
-        axios.get(EndPointProvider.GetReportById(id), {})
+        axios.post(EndPointProvider.ScheduleExtraction(extractorId), {url: url}, {})
             .then(response => {
-                this.setState({selectedReport: response.data});
+                this.setState({successDialogOpen: true})
             })
             .catch(error => {
-                console.log(error.message);
             });
-    };
+    }
 
     render() {
 
-        const selectedExtractor = this.state.selectedExtractor;
-        const selectedReport = this.state.selectedReport;
+        const selectedExtractor: Extractor = this.state.selectedExtractor;
 
         const grayBackground = '#818181';
 
@@ -75,75 +69,101 @@ class ExtractorListPage extends React.Component<any, any> {
         }
 
         return (
-            <Grid container>
-                <Grid item xs={2} style={{backgroundColor: grayBackground}}>
-                    <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
-                        <List style={{marginTop: 20}}>
-                            {
-                                this.state.extractors.map((extractor: Extractor) => {
-                                    return (
-                                        <ListItem key={extractor.id} button onClick={() => {
-                                            this.setState({selectedExtractor: extractor});
-                                            this.getReport(extractor.id);
-                                        }}>
-                                            <ListItemText
-                                                primary={<Typography><b>{extractor.name}</b></Typography>}
-                                                secondary={'URL: ' + extractor.url}/>
-                                        </ListItem>
-                                    );
-                                })
-                            }
-                        </List>
-                    </Paper>
-                </Grid>
-                <Grid item xs={8}>
-                    <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
-                        <Grid item xs={4}/>
-                        <Grid item xs={4}>
-                            {(selectedExtractor == null ?
-                                    <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
-                                        select from left</b></Typography>
-                                    :
-                                    <ExpansionPanel expanded>
-                                        <ExpansionPanelSummary
-                                            key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
+            <>
+                <Dialog open={this.state.successDialogOpen} onClose={() => {
+                    this.setState({successDialogOpen: false})
+                }}>
+                    <DialogTitle>Success</DialogTitle>
+                    <DialogContent>
+                        Extraction scheduled, see the report or continue scheduling?
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => {
+                            this.setState({successDialogOpen: false})
+                        }}>
+                            Schedule Stuff
+                        </Button>
+                        <Button onClick={() => {
+                            this.props.history.push(PathProvider.Reports);
+                        }}>
+                            See the reports
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+                <Grid container>
+                    <Grid item xs={2} style={{backgroundColor: grayBackground}}>
+                        <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
+                            <List style={{marginTop: 20}}>
+                                {
+                                    this.state.extractors.map((extractor: Extractor) => {
+                                        return (
+                                            <ListItem key={extractor.id} button onClick={() => {
+                                                this.setState({selectedExtractor: extractor});
+                                            }}>
+                                                <ListItemText
+                                                    primary={<Typography><b>{extractor.name}</b></Typography>}
+                                                    secondary={'URL: ' + extractor.url}/>
+                                            </ListItem>
+                                        );
+                                    })
+                                }
+                            </List>
+                        </Paper>
+                    </Grid>
+                    <Grid item xs={8}>
+                        <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
+                            <Grid item xs={4}/>
+                            <Grid item xs={4}>
+                                {(selectedExtractor == null ?
+                                        <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                            select from left</b></Typography>
+                                        :
+                                        <ExpansionPanel expanded>
+                                            <ExpansionPanelSummary
+                                                key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
 
-                                        <ExpansionPanelDetails>
-                                            <Grid container>
-                                                <Grid item xs={12}>
-                                                    {
-                                                        selectedExtractor.queries.map((query: Query) => {
-                                                            return (
-                                                                <>
-                                                                    <ExpansionPanel key={query.id}>
-                                                                        <ExpansionPanelSummary
-                                                                            expandIcon={<ExpandMore/>}>
-                                                                            <Typography>{query.name}</Typography>
-                                                                        </ExpansionPanelSummary>
-                                                                    </ExpansionPanel>
-                                                                    {
-                                                                        query.subQueries == null ?
-                                                                            null
-                                                                            :
-                                                                            getQueryViews(query)
-                                                                    }
-                                                                </>
-                                                            );
-                                                        })
-                                                    }
+                                            <ExpansionPanelDetails>
+                                                <Grid container>
+                                                    <Grid item xs={12}>
+                                                        {
+                                                            selectedExtractor.queries.map((query: Query) => {
+                                                                return (
+                                                                    <>
+                                                                        <ExpansionPanel key={query.id}>
+                                                                            <ExpansionPanelSummary
+                                                                                expandIcon={<ExpandMore/>}>
+                                                                                <Typography>{query.name}</Typography>
+                                                                            </ExpansionPanelSummary>
+                                                                        </ExpansionPanel>
+                                                                        {
+                                                                            query.subQueries == null ?
+                                                                                null
+                                                                                :
+                                                                                getQueryViews(query)
+                                                                        }
+                                                                    </>
+                                                                );
+                                                            })
+                                                        }
+                                                    </Grid>
                                                 </Grid>
-                                            </Grid>
-                                        </ExpansionPanelDetails>
-                                    </ExpansionPanel>
-                            )}
+                                            </ExpansionPanelDetails>
+                                            <ExpansionPanelActions>
+                                                <Button
+                                                    onClick={() => this.scheduleExtraction(selectedExtractor.id, selectedExtractor.url)}>Schedule
+                                                    Extraction</Button>
+                                            </ExpansionPanelActions>
+                                        </ExpansionPanel>
+                                )}
+                            </Grid>
                         </Grid>
                     </Grid>
+                    <Grid item xs={2} style={{backgroundColor: grayBackground}}>
+                        <Typography style={{textAlign: 'center', color: '#FFFFFF', marginTop: 70, fontSize: 17}}>
+                            Reserved Area</Typography>
+                    </Grid>
                 </Grid>
-                <Grid item xs={2} style={{backgroundColor: grayBackground}}>
-                    <Typography style={{textAlign: 'center', color: '#FFFFFF', marginTop: 70, fontSize: 17}}>
-                        Reserved Area</Typography>
-                </Grid>
-            </Grid>
+            </>
         );
     }
 }
