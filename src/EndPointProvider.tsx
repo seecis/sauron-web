@@ -1,9 +1,18 @@
 import * as React from 'react';
 
-const env = process.env;
+let env;
+if(process) {
+    env = process.env.NODE_ENV;
+} else {
+    env = undefined;
+}
 
 let basePath = '';
-if (env.NODE_ENV == 'production') {
+//Todo: Add some sense.
+let prodOverride = true;
+let connectToProduction = prodOverride || env == 'production';
+
+if (connectToProduction) {
     basePath = 'http://api.sauron.amerikadaniste.com';
 } else {
     basePath = 'http://192.168.1.83:9091';
