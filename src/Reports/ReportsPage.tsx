@@ -1,76 +1,84 @@
 import * as React from 'react';
 import {withRouter} from "react-router";
 import Grid from "@material-ui/core/Grid/Grid";
-import Typography from "@material-ui/core/Typography/Typography";
-import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
-import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary";
-import ExpandMore from "@material-ui/icons/ExpandMore";
+import Paper from "@material-ui/core/Paper/Paper";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
-import Paper from "@material-ui/core/Paper/Paper";
+import Typography from "@material-ui/core/Typography/Typography";
+import ExpandMore from "@material-ui/icons/ExpandMore";
+import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary";
+import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 import axios from "axios";
-import {Extractor} from "../Extractor";
-import Query from "../models";
 import {EndPointProvider} from "../EndPointProvider";
 
 type Field = {
     id: string;
+    subFields: Field[];
     label: string;
     data: string;
-}
+};
 
 type Report = {
-    id: string;
     Field: Field;
+    id: string;
     FieldId: string;
+};
+
+type ReportSummary = {
+    id: string;
+    created_at: string | null;
+    updated_at: string | null;
+    deleted_at: string | null;
 }
 
-class ResultsPage extends React.Component<any, any> {
+interface ReportsPageProps {
+}
+
+class ReportsPage extends React.Component<ReportsPageProps, any> {
 
     constructor(props) {
         super(props);
         this.state = {
-            extractors: null,
-            selectedExtractor: null,
+            reports: null,
             selectedReport: null
-        }
+        };
     }
 
-    getExtractors = () => {
-        axios.get(EndPointProvider.ExtractorList, {})
+    getReports = () => {
+        axios.get(EndPointProvider.Reports, {})
             .then(response => {
-                this.setState({extractors: response.data})
+                this.setState({reports: response.data})
             })
             .catch(error => {
                 alert(error.message);
             });
     };
 
-    getReport = (id: string | undefined) => {
-        if (id == undefined) {
+    fetchReportById = (reportId: string | undefined) => {
+        let path = EndPointProvider.GetReportById(reportId);
+        if (path == null) {
             return;
         }
 
-        axios.get(EndPointProvider.GetReportById(id), {})
+        axios.get(path, {})
             .then(response => {
-                this.setState({selectedReport: response.data});
+                this.setState({selectedReport: response.data})
             })
             .catch(error => {
-                console.log(error.message);
+                alert(error.message);
             });
     };
 
     render() {
 
-        const selectedExtractor = this.state.selectedExtractor;
-        const selectedReport = this.state.selectedReport;
-
         const grayBackground = '#818181';
+        const selectedReport: Report = this.state.selectedReport;
+        const reports: ReportSummary[] = this.state.reports;
 
-        if (this.state.extractors == null) {
-            this.getExtractors();
+        if (reports == null) {
+            this.getReports();
             return null;
         }
 
@@ -80,15 +88,15 @@ class ResultsPage extends React.Component<any, any> {
                     <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
                         <List style={{marginTop: 20}}>
                             {
-                                this.state.extractors.map((extractor: Extractor) => {
+                                reports.map((report: ReportSummary) => {
                                     return (
-                                        <ListItem key={extractor.id} button onClick={() => {
-                                            this.setState({selectedExtractor: extractor});
-                                            this.getReport(extractor.id);
+                                        <ListItem key={report.id} button onClick={() => {
+                                            this.setState({selectedExtractor: report});
+                                            this.fetchReportById(report.id);
                                         }}>
                                             <ListItemText
-                                                primary={<Typography><b>{extractor.name}</b></Typography>}
-                                                secondary={'URL: ' + extractor.url}/>
+                                                primary={<Typography><b>{report.id}</b></Typography>}
+                                            />
                                         </ListItem>
                                     );
                                 })
@@ -100,32 +108,43 @@ class ResultsPage extends React.Component<any, any> {
                     <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
                         <Grid item xs={4}/>
                         <Grid item xs={4}>
-                            {(selectedExtractor == null ?
+                            {(selectedReport == null ?
                                     <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
                                         select from left</b></Typography>
                                     :
                                     <ExpansionPanel expanded>
                                         <ExpansionPanelSummary
-                                            key={selectedExtractor.id}>{selectedExtractor.name}</ExpansionPanelSummary>
+                                            key={selectedReport.id}>{selectedReport.id}</ExpansionPanelSummary>
 
                                         <ExpansionPanelDetails>
                                             <Grid container>
                                                 <Grid item xs={12}>
                                                     {
-                                                        selectedExtractor.queries.map((query: Query) => {
+                                                        selectedReport.Field.subFields.map((subField: Field) => {
                                                             return (
                                                                 <>
-                                                                    <ExpansionPanel key={query.id}>
+                                                                    <ExpansionPanel key={subField.id}
+                                                                                    defaultExpanded={!(subField.data === "")}>
                                                                         <ExpansionPanelSummary
                                                                             expandIcon={<ExpandMore/>}>
-                                                                            <Typography>{query.name}</Typography>
+                                                                            <Typography>{subField.label}</Typography>
                                                                         </ExpansionPanelSummary>
+                                                                        {
+                                                                            subField.data !== "" ?
+                                                                                <ExpansionPanelDetails>
+                                                                                    {
+                                                                                        subField.data
+                                                                                    }
+                                                                                </ExpansionPanelDetails>
+                                                                                :
+                                                                                null
+                                                                        }
                                                                     </ExpansionPanel>
                                                                     {
-                                                                        query.subQueries == null ?
+                                                                        subField.subFields == null ?
                                                                             null
                                                                             :
-                                                                            getQueryViews(query)
+                                                                            getFieldViews(subField)
                                                                     }
                                                                 </>
                                                             );
@@ -148,25 +167,33 @@ class ResultsPage extends React.Component<any, any> {
     }
 }
 
-function getQueryViews(query: Query) {
-    return query.subQueries.map((subQuery: Query) => {
+function getFieldViews(field: Field) {
+    return field.subFields.map((subField: Field) => {
         return (
             <>
-                <ExpansionPanel key={subQuery.id}>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMore/>}>
-                        <Typography>{query.name}.{subQuery.name}</Typography>
+                <ExpansionPanel key={subField.id} defaultExpanded={!(subField.data === "")}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
+                        <Typography>{field.label}.{subField.label}</Typography>
                     </ExpansionPanelSummary>
+                    {
+                        subField.data !== "" ?
+                            <ExpansionPanelDetails>
+                                {subField.data}
+                            </ExpansionPanelDetails>
+                            :
+                            <ExpansionPanelDetails>
+                            </ExpansionPanelDetails>
+                    }
                 </ExpansionPanel>
                 {
-                    subQuery.subQueries == null ?
+                    subField.subFields == null ?
                         null
                         :
-                        getQueryViews(subQuery)
+                        getFieldViews(subField)
                 }
             </>
         );
     })
 }
 
-export default withRouter(ResultsPage);
+export default withRouter(ReportsPage);
