@@ -26,7 +26,8 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
         super(props);
         this.state = {
             reports: null,
-            selectedReport: null
+            selectedReport: null,
+            selectedReportSummary: null
         };
     }
 
@@ -48,7 +49,15 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
 
         axios.get(path, {})
             .then(response => {
-                this.setState({selectedReport: response.data})
+
+                let selectedReportSummary: ReportSummary | null = null;
+                this.state.reports.map((report: ReportSummary) => {
+                    if (report.id === reportId) {
+                        selectedReportSummary = report;
+                    }
+                });
+
+                this.setState({selectedReport: response.data, selectedReportSummary: selectedReportSummary})
             })
             .catch(error => {
                 alert(error.message);
@@ -59,7 +68,8 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
 
         const grayBackground = '#818181';
         const selectedReport: Report = this.state.selectedReport;
-        const reports: ReportSummary[] = this.state.reports;
+        const reports: ReportSummary[] | null = this.state.reports;
+        const selectedReportSummary: ReportSummary | null = this.state.selectedReportSummary;
 
         if (reports == null) {
             this.getReports();
@@ -69,32 +79,52 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
         return (
             <Grid container>
                 <Grid item xs={2} style={{backgroundColor: grayBackground}}>
-                    <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
-                        <List style={{marginTop: 20}}>
-                            {
-                                reports.map((report: ReportSummary) => {
-                                    return (
-                                        <ListItem key={report.id} button onClick={() => {
-                                            this.setState({selectedExtractor: report});
-                                            this.fetchReportById(report.id);
-                                        }}>
-                                            <ListItemText
-                                                primary={<Typography><b>{report.id}</b></Typography>}
-                                            />
-                                        </ListItem>
-                                    );
-                                })
-                            }
-                        </List>
-                    </Paper>
+                    {
+                        reports !== null && reports.length > 0 ?
+                            <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
+                                <List style={{marginTop: 20}}>
+                                    {
+                                        reports.map((report: ReportSummary) => {
+                                            return (
+                                                <ListItem key={report.id} button onClick={() => {
+                                                    this.fetchReportById(report.id);
+                                                }}>
+                                                    <ListItemText
+                                                        primary={<Typography><b>{report.id}</b></Typography>}
+                                                    />
+                                                </ListItem>
+                                            );
+                                        })
+                                    }
+                                </List>
+                            </Paper>
+                            :
+                            null
+                    }
                 </Grid>
                 <Grid item xs={8}>
                     <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
-                        <Grid item xs={4}/>
                         <Grid item xs={4}>
-                            {(selectedReport == null ?
-                                    <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
-                                        select from left</b></Typography>
+                            {selectedReportSummary == null ?
+                                null
+                                :
+                                <>
+                                    <Paper><Typography>Created
+                                        at: {new Date(selectedReportSummary.created_at).toLocaleTimeString()}</Typography></Paper>
+                                    <Paper><Typography>Updated
+                                        at: {new Date(selectedReportSummary.updated_at!).toLocaleTimeString()}</Typography></Paper>
+                                </>
+                            }
+                        </Grid>
+                        <Grid item xs={4}>
+                            {(selectedReport == null ? (
+                                        reports !== null && reports.length == 0 ?
+                                            <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>There
+                                                are no reports to show</b></Typography>
+                                            :
+                                            <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                                select from left</b></Typography>
+                                    )
                                     :
                                     <ExpansionPanel expanded>
                                         <ExpansionPanelSummary

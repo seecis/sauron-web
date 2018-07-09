@@ -60,10 +60,10 @@ class ExtractorListPage extends React.Component<any, any> {
     render() {
 
         const selectedExtractor: Extractor = this.state.selectedExtractor;
-
+        const extractors: Extractor[] | null = this.state.extractors;
         const grayBackground = '#818181';
 
-        if (this.state.extractors == null) {
+        if (extractors == null) {
             this.getExtractors();
             return null;
         }
@@ -92,31 +92,45 @@ class ExtractorListPage extends React.Component<any, any> {
                 </Dialog>
                 <Grid container>
                     <Grid item xs={2} style={{backgroundColor: grayBackground}}>
-                        <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
-                            <List style={{marginTop: 20}}>
-                                {
-                                    this.state.extractors.map((extractor: Extractor) => {
-                                        return (
-                                            <ListItem key={extractor.id} button onClick={() => {
-                                                this.setState({selectedExtractor: extractor});
-                                            }}>
-                                                <ListItemText
-                                                    primary={<Typography><b>{extractor.name}</b></Typography>}
-                                                    secondary={'URL: ' + extractor.url}/>
-                                            </ListItem>
-                                        );
-                                    })
-                                }
-                            </List>
-                        </Paper>
+                        {
+                            extractors !== null && extractors.length > 0 ?
+                                <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
+                                    <List style={{marginTop: 20}}>
+                                        {
+                                            extractors.map((extractor: Extractor) => {
+                                                return (
+                                                    <ListItem key={extractor.id} button onClick={() => {
+                                                        this.setState({selectedExtractor: extractor});
+                                                    }}>
+                                                        <ListItemText
+                                                            primary={<Typography><b>{extractor.name}</b></Typography>}
+                                                            secondary={'URL: ' + extractor.url}/>
+                                                    </ListItem>
+                                                );
+                                            })
+                                        }
+                                    </List>
+                                </Paper>
+                                :
+                                null
+                        }
                     </Grid>
                     <Grid item xs={8}>
                         <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
                             <Grid item xs={4}/>
                             <Grid item xs={4}>
                                 {(selectedExtractor == null ?
-                                        <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
-                                            select from left</b></Typography>
+                                        (
+                                            extractors !== null && extractors.length > 0 ?
+                                                <Typography
+                                                    style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>Please
+                                                    select from left</b></Typography>
+                                                :
+                                                <Typography
+                                                    style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>There
+                                                    are no extractors to show</b></Typography>
+                                        )
+
                                         :
                                         <ExpansionPanel expanded>
                                             <ExpansionPanelSummary
