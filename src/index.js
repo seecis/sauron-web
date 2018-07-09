@@ -31,6 +31,7 @@ import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
 import {PathProvider} from "./PathProvider";
 import ReportsPage from './Reports/ReportsPage';
+import ReportDetailPage from './Reports/ReportDetailPage';
 
 const cache = setupCache(/* options */);
 
@@ -144,6 +145,13 @@ class App extends React.Component {
                                 return <React.Fragment>
                                     <SauronAppBar title={'Extractors'}/>
                                     <ExtractorListPage/>
+                                </React.Fragment>
+                            }}/>
+
+                            <Route exact path={PathProvider.ReportDetail} component={() => {
+                                return <React.Fragment>
+                                    <SauronAppBar title={'Report'}/>
+                                    <ReportDetailPage/>
                                 </React.Fragment>
                             }}/>
 

@@ -12,28 +12,12 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 import axios from "axios";
 import {EndPointProvider} from "../EndPointProvider";
-
-type Field = {
-    id: string;
-    subFields: Field[];
-    label: string;
-    data: string;
-};
-
-type Report = {
-    Field: Field;
-    id: string;
-    FieldId: string;
-};
-
-type ReportSummary = {
-    id: string;
-    created_at: string | null;
-    updated_at: string | null;
-    deleted_at: string | null;
-}
+import {Field, Report, ReportSummary} from "../models";
+import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions/ExpansionPanelActions";
+import Button from "@material-ui/core/Button/Button";
 
 interface ReportsPageProps {
+    history: any;
 }
 
 class ReportsPage extends React.Component<ReportsPageProps, any> {
@@ -49,7 +33,7 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
     getReports = () => {
         axios.get(EndPointProvider.Reports, {})
             .then(response => {
-                this.setState({reports: response.data})
+                this.setState({reports: response.data});
             })
             .catch(error => {
                 alert(error.message);
@@ -153,6 +137,11 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                                 </Grid>
                                             </Grid>
                                         </ExpansionPanelDetails>
+                                        <ExpansionPanelActions>
+                                            <Button onClick={() => {
+                                                this.props.history.push('/report/' + selectedReport.id);
+                                            }}>Details</Button>
+                                        </ExpansionPanelActions>
                                     </ExpansionPanel>
                             )}
                         </Grid>

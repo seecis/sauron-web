@@ -5,4 +5,5 @@ export class PathProvider {
     public static CreateExtractor: string = '/createExtractor';
     public static Reports: string = '/reports';
     public static ExtractorList: string = '/extractors';
+    public static ReportDetail: string = '/report/:reportId';
 }
