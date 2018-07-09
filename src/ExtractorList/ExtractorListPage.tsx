@@ -129,9 +129,8 @@ class ExtractorListPage extends React.Component<any, any> {
                                                             selectedExtractor.queries.map((query: Query) => {
                                                                 return (
                                                                     <>
-                                                                        <ExpansionPanel key={query.id}>
-                                                                            <ExpansionPanelSummary
-                                                                                expandIcon={<ExpandMore/>}>
+                                                                        <ExpansionPanel key={query.id} expanded>
+                                                                            <ExpansionPanelSummary>
                                                                                 <Typography>{query.name}</Typography>
                                                                             </ExpansionPanelSummary>
                                                                         </ExpansionPanel>
@@ -172,9 +171,8 @@ function getQueryViews(query: Query) {
     return query.subQueries.map((subQuery: Query) => {
         return (
             <>
-                <ExpansionPanel key={subQuery.id}>
-                    <ExpansionPanelSummary
-                        expandIcon={<ExpandMore/>}>
+                <ExpansionPanel key={subQuery.id} expanded>
+                    <ExpansionPanelSummary>
                         <Typography>{query.name}.{subQuery.name}</Typography>
                     </ExpansionPanelSummary>
                 </ExpansionPanel>

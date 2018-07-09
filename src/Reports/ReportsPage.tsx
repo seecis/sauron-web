@@ -10,8 +10,6 @@ import ExpandMore from "@material-ui/icons/ExpandMore";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
-import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions/ExpansionPanelActions";
-import Button from "@material-ui/core/Button/Button";
 import axios from "axios";
 import {EndPointProvider} from "../EndPointProvider";
 
@@ -58,7 +56,7 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
             });
     };
 
-    getReport = (reportId: string | undefined) => {
+    fetchReportById = (reportId: string | undefined) => {
         let path = EndPointProvider.GetReportById(reportId);
         if (path == null) {
             return;
@@ -82,8 +80,6 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
         if (reports == null) {
             this.getReports();
             return null;
-            {/*<Typography style={{marginTop: 30, marginLeft: 50}}>Nothing to see here :(</Typography>*/
-            }
         }
 
         return (
@@ -96,11 +92,10 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                     return (
                                         <ListItem key={report.id} button onClick={() => {
                                             this.setState({selectedExtractor: report});
-                                            this.getReport(report.id);
+                                            this.fetchReportById(report.id);
                                         }}>
                                             <ListItemText
                                                 primary={<Typography><b>{report.id}</b></Typography>}
-                                                // secondary={'URL: ' + report.url}
                                             />
                                         </ListItem>
                                     );
@@ -128,16 +123,17 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                                         selectedReport.Field.subFields.map((subField: Field) => {
                                                             return (
                                                                 <>
-                                                                    <ExpansionPanel key={subField.id}>
+                                                                    <ExpansionPanel key={subField.id}
+                                                                                    defaultExpanded={!(subField.data === "")}>
                                                                         <ExpansionPanelSummary
                                                                             expandIcon={<ExpandMore/>}>
                                                                             <Typography>{subField.label}</Typography>
                                                                         </ExpansionPanelSummary>
                                                                         {
-                                                                            selectedReport.Field.data !== "" ?
+                                                                            subField.data !== "" ?
                                                                                 <ExpansionPanelDetails>
                                                                                     {
-                                                                                        selectedReport.Field.data
+                                                                                        subField.data
                                                                                     }
                                                                                 </ExpansionPanelDetails>
                                                                                 :
@@ -157,9 +153,6 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                                 </Grid>
                                             </Grid>
                                         </ExpansionPanelDetails>
-                                        <ExpansionPanelActions>
-                                            <Button>Schedule Extraction</Button>
-                                        </ExpansionPanelActions>
                                     </ExpansionPanel>
                             )}
                         </Grid>
@@ -178,7 +171,7 @@ function getFieldViews(field: Field) {
     return field.subFields.map((subField: Field) => {
         return (
             <>
-                <ExpansionPanel key={subField.id}>
+                <ExpansionPanel key={subField.id} defaultExpanded={!(subField.data === "")}>
                     <ExpansionPanelSummary expandIcon={<ExpandMore/>}>
                         <Typography>{field.label}.{subField.label}</Typography>
                     </ExpansionPanelSummary>
