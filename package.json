@@ -44,7 +44,6 @@
     "prop-types": "latest",
     "raf": "3.4.0",
     "react": "^16.4.0",
-    "react-dev-utils": "^5.0.1",
     "react-dom": "^16.4.0",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
@@ -60,7 +59,7 @@
     "xmlserializer": "^0.6.1"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start": "webpack-dev-server --config config/webpack.config.dev.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "proxy": "node ./src/proxy.js"
@@ -71,14 +70,15 @@
     "@types/react-router": "4.0.25",
     "@types/react-router-dom": "4.2.6",
     "awesome-typescript-loader": "5.2.0",
-    "csstype": "2.4.2",
+    "csstype": "2.5.5",
     "express-reload": "1.1.0",
+    "interpolate-html-plugin": "^3.0.0",
     "node-sass": "4.9.0",
-    "sass-loader": "7.0.1",
+    "sass-loader": "7.0.3",
+    "serve": "9.1.2",
     "source-map-loader": "0.2.3",
     "typescript": "2.9.1",
-    "webpack-cli": "3.0.8",
-    "serve": "9.1.2"
+    "webpack-cli": "3.0.8"
   },
   "jest": {
     "collectCoverageFrom": [
