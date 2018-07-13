@@ -24,6 +24,10 @@ import Chip from "@material-ui/core/Chip/Chip";
 import TextField from "@material-ui/core/TextField/TextField";
 import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 
+const hours = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24];
+const days = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31];
+const weeks = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
 class ExtractorListPage extends React.Component<any, any> {
 
     constructor(props) {
@@ -37,7 +41,8 @@ class ExtractorListPage extends React.Component<any, any> {
             extractionUrlList: [],
             textFieldValue: '',
             period: 1,
-            time: 'Days'
+            time: 'Days',
+            dropdownList: days
         }
     }
 
@@ -79,7 +84,7 @@ class ExtractorListPage extends React.Component<any, any> {
             result = now.getMinutes() + ' ' + now.getHours() + ' ' + remainder + '-' + (31 - remainder) + '/' + period + ' * *';
         } else if (time === 'Hours') {
             let remainder = now.getHours() % period;
-            result = now.getMinutes() + ' ' + remainder + '-' +(24-remainder) + '/' + period + ' * * *';
+            result = now.getMinutes() + ' ' + remainder + '-' + (24 - remainder) + '/' + period + ' * * *';
         } else if (time === 'Weeks') {
             result = now.getMinutes() + ' ' + now.getHours() + ' * * ' + now.getDay();
         } else {
@@ -159,15 +164,13 @@ class ExtractorListPage extends React.Component<any, any> {
                                 }}
                                 style={{marginLeft: 20}}
                             >
-                                <MenuItem key={1} value={1}>
-                                    {1}
-                                </MenuItem>
-                                <MenuItem key={2} value={2}>
-                                    {2}
-                                </MenuItem>
-                                <MenuItem key={3} value={3}>
-                                    {3}
-                                </MenuItem>
+                                {
+                                    this.state.dropdownList.map((dropdownItem: number) => {
+                                        return <MenuItem key={dropdownItem} value={dropdownItem}>
+                                            {dropdownItem}
+                                        </MenuItem>
+                                    })
+                                }
                             </TextField>
 
                             <TextField
@@ -175,7 +178,26 @@ class ExtractorListPage extends React.Component<any, any> {
                                 value={this.state.time}
                                 onChange={(e) => {
                                     e.stopPropagation();
-                                    this.setState({time: e.target.value});
+                                    let dropdownList;
+                                    switch (e.target.value) {
+                                        case 'Hours':
+                                            dropdownList = hours;
+                                            break;
+                                        case 'Days':
+                                            dropdownList = days;
+                                            break;
+                                        case 'Weeks':
+                                            dropdownList = weeks;
+                                            break;
+                                        default:
+                                            dropdownList = hours;
+                                    }
+
+                                    if(dropdownList.indexOf(this.state.period) == -1){
+                                        this.setState({time: e.target.value, dropdownList: dropdownList, period: dropdownList[0]});
+                                    } else{
+                                        this.setState({time: e.target.value, dropdownList: dropdownList});
+                                    }
                                 }}
                                 style={{marginLeft: 20}}
                             >
