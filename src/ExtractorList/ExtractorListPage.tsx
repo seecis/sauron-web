@@ -4,7 +4,6 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelSummary from "@material-ui/core/ExpansionPanelSummary/ExpansionPanelSummary";
-import ExpandMore from "@material-ui/icons/ExpandMore";
 import List from "@material-ui/core/List/List";
 import ListItem from "@material-ui/core/ListItem/ListItem";
 import ListItemText from "@material-ui/core/ListItemText/ListItemText";
@@ -21,6 +20,9 @@ import Dialog from "@material-ui/core/Dialog/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions/DialogActions";
+import Chip from "@material-ui/core/Chip/Chip";
+import TextField from "@material-ui/core/TextField/TextField";
+import MenuItem from "@material-ui/core/MenuItem/MenuItem";
 
 class ExtractorListPage extends React.Component<any, any> {
 
@@ -30,7 +32,12 @@ class ExtractorListPage extends React.Component<any, any> {
             extractors: null,
             selectedExtractor: null,
             selectedReport: null,
-            successDialogOpen: false
+            successDialogOpen: false,
+            schedulingDialogOpen: false,
+            extractionUrlList: [],
+            textFieldValue: '',
+            period: 1,
+            time: 'Days'
         }
     }
 
@@ -44,18 +51,43 @@ class ExtractorListPage extends React.Component<any, any> {
             });
     };
 
-    scheduleExtraction(extractorId: string | undefined, url: string | undefined) {
-        if (extractorId == null || url == null) {
+    scheduleExtraction(extractorId: string | undefined, urlList: string[] | undefined) {
+        if (extractorId == null || urlList == null || urlList.length == 0) {
             return;
         }
 
-        axios.post(EndPointProvider.ScheduleExtraction(extractorId), {url: url}, {})
+        let chronStr = this.createCronStr();
+        alert(chronStr);
+
+        axios.post(EndPointProvider.ScheduleExtraction(extractorId), {url: urlList}, {})
             .then(response => {
-                this.setState({successDialogOpen: true})
+                this.setState({successDialogOpen: true, schedulingDialogOpen: false})
             })
             .catch(error => {
             });
     }
+
+    createCronStr = (): string => {
+        let time = this.state.time;
+        let period = this.state.period;
+        let now = new Date();
+
+        let result = '';
+
+        if (time === 'Days') {
+            let remainder = now.getDate() % period;
+            result = now.getMinutes() + ' ' + now.getHours() + ' ' + remainder + '-' + (31 - remainder) + '/' + period + ' * *';
+        } else if (time === 'Hours') {
+            let remainder = now.getHours() % period;
+            result = now.getMinutes() + ' ' + remainder + '-' +(24-remainder) + '/' + period + ' * * *';
+        } else if (time === 'Weeks') {
+            result = now.getMinutes() + ' ' + now.getHours() + ' * * ' + now.getDay();
+        } else {
+            result = 'Cron Error';
+        }
+
+        return result;
+    };
 
     render() {
 
@@ -70,6 +102,111 @@ class ExtractorListPage extends React.Component<any, any> {
 
         return (
             <>
+                <Dialog open={this.state.schedulingDialogOpen} onClose={() => {
+                    this.setState({schedulingDialogOpen: false})
+                }} fullWidth={true}>
+                    <DialogTitle>Schedule Extraction</DialogTitle>
+                    <DialogContent>
+                        <form onSubmit={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            if (this.state.textFieldValue === "")
+                                return;
+
+                            let urls = this.state.extractionUrlList;
+                            urls.push(this.state.textFieldValue);
+                            this.setState({extractionUrlList: urls, textFieldValue: ''});
+                        }}>
+                            <TextField label={'Run extraction on'} value={this.state.textFieldValue}
+                                       onChange={(e) => {
+                                           this.setState({textFieldValue: e.target.value})
+                                       }}/>
+                        </form>
+                    </DialogContent>
+                    <DialogContent>
+                        {
+                            this.state.extractionUrlList.map((extractionUrl: string) => {
+                                return <Chip
+                                    style={{
+                                        marginRight: 8,
+                                        marginBottom: 4
+                                    }}
+                                    label={extractionUrl}
+                                    onDelete={() => {
+                                        let urls = this.state.extractionUrlList;
+                                        let index = urls.indexOf(extractionUrl);
+                                        if (index > -1) {
+                                            urls.splice(index, 1);
+                                            this.setState({extractionUrlList: urls})
+                                        }
+                                    }}
+                                />
+                            })
+                        }
+                    </DialogContent>
+                    <DialogContent>
+
+                        <Paper elevation={0} style={{backgroundColor: '#00000000'}}>
+                            Every
+
+                            <TextField
+                                select
+                                value={this.state.period}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    this.setState({period: e.target.value});
+                                }}
+                                style={{marginLeft: 20}}
+                            >
+                                <MenuItem key={1} value={1}>
+                                    {1}
+                                </MenuItem>
+                                <MenuItem key={2} value={2}>
+                                    {2}
+                                </MenuItem>
+                                <MenuItem key={3} value={3}>
+                                    {3}
+                                </MenuItem>
+                            </TextField>
+
+                            <TextField
+                                select
+                                value={this.state.time}
+                                onChange={(e) => {
+                                    e.stopPropagation();
+                                    this.setState({time: e.target.value});
+                                }}
+                                style={{marginLeft: 20}}
+                            >
+                                <MenuItem key={1} value={'Hours'}>
+                                    Hours
+                                </MenuItem>
+                                <MenuItem key={2} value={'Days'}>
+                                    Days
+                                </MenuItem>
+                                <MenuItem key={3} value={'Weeks'}>
+                                    Weeks
+                                </MenuItem>
+                            </TextField>
+
+                        </Paper>
+
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={() => this.scheduleExtraction(selectedExtractor.id, this.state.extractionUrlList)}>Schedule</Button>
+                        <Button
+                            onClick={() => {
+                                if (this.state.textFieldValue === "")
+                                    return;
+
+                                let urls = this.state.extractionUrlList;
+                                urls.push(this.state.textFieldValue);
+                                this.setState({extractionUrlList: urls, textFieldValue: ''});
+                            }}>Add URL</Button>
+                    </DialogActions>
+                </Dialog>
                 <Dialog open={this.state.successDialogOpen} onClose={() => {
                     this.setState({successDialogOpen: false})
                 }}>
@@ -163,7 +300,9 @@ class ExtractorListPage extends React.Component<any, any> {
                                             </ExpansionPanelDetails>
                                             <ExpansionPanelActions>
                                                 <Button
-                                                    onClick={() => this.scheduleExtraction(selectedExtractor.id, selectedExtractor.url)}>Schedule
+                                                    onClick={() => {
+                                                        this.setState({schedulingDialogOpen: true})
+                                                    }}>Schedule
                                                     Extraction</Button>
                                             </ExpansionPanelActions>
                                         </ExpansionPanel>
