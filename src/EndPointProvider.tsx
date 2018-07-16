@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 let env;
-if(process) {
+if (process) {
     env = process.env.NODE_ENV;
 } else {
     env = undefined;
@@ -10,7 +10,7 @@ if(process) {
 let basePath = '';
 
 //Todo: Add some sense.
-let prodOverride = true;
+let prodOverride = false;
 let connectToProduction = prodOverride || env == 'production';
 
 if (connectToProduction) {
@@ -22,13 +22,18 @@ if (connectToProduction) {
 export class EndPointProvider {
     public static ExtractorList: string = basePath + '/extractor';
     public static Reports: string = basePath + '/report';
-    public static ScheduleExtraction: (extractorId: string) => string = (extractorId: string) => {
-        return basePath + '/extract/' + extractorId;
-    };
+    public static CreateScheduleJob: string = basePath + '/job/';
+    public static GetJobs: string = basePath + '/job/';
     public static GetReportById: (id: string | undefined) => string | null = (id) => {
         if (id == null) {
             return null;
         }
         return basePath + '/report/' + id
+    };
+    public static GetJobById: (id: string | undefined) => string | null = (id) => {
+        if (id == null) {
+            return null;
+        }
+        return basePath + '/job/' + id
     };
 }

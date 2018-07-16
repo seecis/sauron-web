@@ -12,7 +12,7 @@ import ExpansionPanel from "@material-ui/core/ExpansionPanel/ExpansionPanel";
 import ExpansionPanelDetails from "@material-ui/core/ExpansionPanelDetails/ExpansionPanelDetails";
 import axios from "axios";
 import {EndPointProvider} from "../EndPointProvider";
-import {Field, Report, ReportSummary} from "../models";
+import {Field, default as Query, Report} from "../models";
 import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions/ExpansionPanelActions";
 import Button from "@material-ui/core/Button/Button";
 
@@ -20,44 +20,53 @@ interface ReportsPageProps {
     history: any;
 }
 
+export type HtmlExtractor = {
+    ID: number;
+    Queries?: Query[];
+    CreatedAt: Date;
+    UpdatedAt: Date;
+    DeletedAt?: Date;
+    Url: string;
+    UID?: string;
+    Name: string;
+}
+
+export type Url = {
+    ID: number;
+    JobId: number;
+    Url: string;
+}
+
+// todo: versions type'ı belli değil
+export type Job = {
+    ID: number;
+    UID: string;
+    CreatedAt: Date;
+    UpdatedAt: Date;
+    DeletedAt?: Date;
+    Cron: string;
+    Urls: Url[];
+    Versions: any[];
+    HtmlExtractor: HtmlExtractor;
+    HtmlExtractorId: number;
+    Report: Report;
+    ScheduledTaskId: number;
+}
+
 class ReportsPage extends React.Component<ReportsPageProps, any> {
 
     constructor(props) {
         super(props);
         this.state = {
-            reports: null,
-            selectedReport: null,
-            selectedReportSummary: null
+            jobs: null,
+            selectedJob: null
         };
     }
 
     getReports = () => {
-        axios.get(EndPointProvider.Reports, {})
+        axios.get(EndPointProvider.GetJobs, {})
             .then(response => {
-                this.setState({reports: response.data});
-            })
-            .catch(error => {
-                alert(error.message);
-            });
-    };
-
-    fetchReportById = (reportId: string | undefined) => {
-        let path = EndPointProvider.GetReportById(reportId);
-        if (path == null) {
-            return;
-        }
-
-        axios.get(path, {})
-            .then(response => {
-
-                let selectedReportSummary: ReportSummary | null = null;
-                this.state.reports.map((report: ReportSummary) => {
-                    if (report.id === reportId) {
-                        selectedReportSummary = report;
-                    }
-                });
-
-                this.setState({selectedReport: response.data, selectedReportSummary: selectedReportSummary})
+                this.setState({jobs: response.data});
             })
             .catch(error => {
                 alert(error.message);
@@ -67,11 +76,11 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
     render() {
 
         const grayBackground = '#818181';
-        const selectedReport: Report = this.state.selectedReport;
-        const reports: ReportSummary[] | null = this.state.reports;
-        const selectedReportSummary: ReportSummary | null = this.state.selectedReportSummary;
+        const selectedJob: Job | null = this.state.selectedJob;
+        const selectedReport: Report | null = selectedJob != null ? selectedJob.Report : null;
+        const jobs: Job[] | null = this.state.jobs;
 
-        if (reports == null) {
+        if (jobs == null) {
             this.getReports();
             return null;
         }
@@ -80,17 +89,18 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
             <Grid container>
                 <Grid item xs={2} style={{backgroundColor: grayBackground}}>
                     {
-                        reports !== null && reports.length > 0 ?
+                        jobs !== null && jobs.length > 0 ?
                             <Paper elevation={0} style={{backgroundColor: '#FFFFFF'}}>
                                 <List style={{marginTop: 20}}>
                                     {
-                                        reports.map((report: ReportSummary) => {
+                                        jobs.map((job: Job) => {
                                             return (
-                                                <ListItem key={report.id} button onClick={() => {
-                                                    this.fetchReportById(report.id);
+                                                <ListItem key={job.UID} button onClick={() => {
+                                                    this.setState({selectedJob: job});
                                                 }}>
                                                     <ListItemText
-                                                        primary={<Typography><b>{report.id}</b></Typography>}
+                                                        primary={
+                                                            <Typography><b>{job.HtmlExtractor.Name === '' ? 'Unnamed Extractor' : job.HtmlExtractor.Name}</b></Typography>}
                                                     />
                                                 </ListItem>
                                             );
@@ -105,20 +115,20 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                 <Grid item xs={8}>
                     <Grid container spacing={24} style={{marginTop: 20, minHeight: '100vh'}}>
                         <Grid item xs={4}>
-                            {selectedReportSummary == null ?
+                            {selectedJob == null ?
                                 null
                                 :
-                                <>
-                                    <Paper><Typography>Created
-                                        at: {new Date(selectedReportSummary.created_at).toLocaleTimeString()}</Typography></Paper>
-                                    <Paper><Typography>Updated
-                                        at: {new Date(selectedReportSummary.updated_at!).toLocaleTimeString()}</Typography></Paper>
-                                </>
+                                <div style={{marginLeft: 50}}>
+                                    <Typography style={{marginBottom: 8}}>Created
+                                        at: {new Date(selectedJob.CreatedAt).toLocaleTimeString()}</Typography>
+                                    <Typography>Updated
+                                        at: {new Date(selectedJob.UpdatedAt).toLocaleTimeString()}</Typography>
+                                </div>
                             }
                         </Grid>
                         <Grid item xs={4}>
                             {(selectedReport == null ? (
-                                        reports !== null && reports.length == 0 ?
+                                        jobs !== null && jobs.length == 0 ?
                                             <Typography style={{marginTop: 50, textAlign: 'center', fontSize: 17}}><b>There
                                                 are no reports to show</b></Typography>
                                             :
@@ -134,42 +144,63 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                             <Grid container>
                                                 <Grid item xs={12}>
                                                     {
-                                                        selectedReport.Field.subFields.map((subField: Field) => {
-                                                            return (
-                                                                <>
-                                                                    <ExpansionPanel key={subField.id}
-                                                                                    defaultExpanded={!(subField.data === "")}>
-                                                                        <ExpansionPanelSummary
-                                                                            expandIcon={<ExpandMore/>}>
-                                                                            <Typography>{subField.label}</Typography>
-                                                                        </ExpansionPanelSummary>
+                                                        selectedReport.Field.subFields == null ?
+                                                            <ExpansionPanel key={selectedReport.Field.id}
+                                                                            defaultExpanded={!(selectedReport.Field.data === "")}>
+                                                                <ExpansionPanelSummary
+                                                                    expandIcon={<ExpandMore/>}>
+                                                                    <Typography>{selectedReport.Field.label === '' ? 'Unnamed Field' : selectedReport.Field.label}</Typography>
+                                                                </ExpansionPanelSummary>
+                                                                {
+                                                                    selectedReport.Field.data !== "" ?
+                                                                        <ExpansionPanelDetails>
+                                                                            {
+                                                                                selectedReport.Field.data
+                                                                            }
+                                                                        </ExpansionPanelDetails>
+                                                                        :
+                                                                        <ExpansionPanelDetails>
+                                                                            No Data
+                                                                        </ExpansionPanelDetails>
+                                                                }
+                                                            </ExpansionPanel>
+                                                            :
+                                                            selectedReport.Field.subFields.map((subField: Field) => {
+                                                                return (
+                                                                    <>
+                                                                        <ExpansionPanel key={subField.id}
+                                                                                        defaultExpanded={!(subField.data === "")}>
+                                                                            <ExpansionPanelSummary
+                                                                                expandIcon={<ExpandMore/>}>
+                                                                                <Typography>{subField.label}</Typography>
+                                                                            </ExpansionPanelSummary>
+                                                                            {
+                                                                                subField.data !== "" ?
+                                                                                    <ExpansionPanelDetails>
+                                                                                        {
+                                                                                            subField.data
+                                                                                        }
+                                                                                    </ExpansionPanelDetails>
+                                                                                    :
+                                                                                    null
+                                                                            }
+                                                                        </ExpansionPanel>
                                                                         {
-                                                                            subField.data !== "" ?
-                                                                                <ExpansionPanelDetails>
-                                                                                    {
-                                                                                        subField.data
-                                                                                    }
-                                                                                </ExpansionPanelDetails>
-                                                                                :
+                                                                            subField.subFields == null ?
                                                                                 null
+                                                                                :
+                                                                                getFieldViews(subField)
                                                                         }
-                                                                    </ExpansionPanel>
-                                                                    {
-                                                                        subField.subFields == null ?
-                                                                            null
-                                                                            :
-                                                                            getFieldViews(subField)
-                                                                    }
-                                                                </>
-                                                            );
-                                                        })
+                                                                    </>
+                                                                );
+                                                            })
                                                     }
                                                 </Grid>
                                             </Grid>
                                         </ExpansionPanelDetails>
                                         <ExpansionPanelActions>
                                             <Button onClick={() => {
-                                                this.props.history.push('/report/' + selectedReport.id);
+                                                this.props.history.push('/report/' + selectedReport.VersionId);
                                             }}>Details</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
@@ -213,6 +244,25 @@ function getFieldViews(field: Field) {
             </>
         );
     })
+}
+
+function getNonsubbedFieldDisplay(field: Field): string {
+    let label = field.label;
+    let data = field.data;
+
+    if (field.subFields != null) {
+        alert("Subfield not null")
+    }
+
+    if (label === '') {
+        label = 'Unnamed field';
+    }
+
+    if (data === '') {
+        data = 'No data';
+    }
+
+    return label + ': ' + data;
 }
 
 export default withRouter(ReportsPage);

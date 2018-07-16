@@ -24,6 +24,7 @@ type Report = {
     Field: Field;
     id: string;
     FieldId: string;
+    VersionId: number;
 };
 
 type ReportSummary = {

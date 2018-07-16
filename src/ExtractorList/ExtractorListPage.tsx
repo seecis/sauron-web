@@ -62,13 +62,17 @@ class ExtractorListPage extends React.Component<any, any> {
         }
 
         let chronStr = this.createCronStr();
-        alert(chronStr);
 
-        axios.post(EndPointProvider.ScheduleExtraction(extractorId), {url: urlList}, {})
+        axios.post(EndPointProvider.CreateScheduleJob, {
+            Urls: urlList,
+            Cron: chronStr,
+            extractorId: extractorId
+        }, {})
             .then(response => {
                 this.setState({successDialogOpen: true, schedulingDialogOpen: false})
             })
             .catch(error => {
+                alert(error)
             });
     }
 
@@ -193,9 +197,13 @@ class ExtractorListPage extends React.Component<any, any> {
                                             dropdownList = hours;
                                     }
 
-                                    if(dropdownList.indexOf(this.state.period) == -1){
-                                        this.setState({time: e.target.value, dropdownList: dropdownList, period: dropdownList[0]});
-                                    } else{
+                                    if (dropdownList.indexOf(this.state.period) == -1) {
+                                        this.setState({
+                                            time: e.target.value,
+                                            dropdownList: dropdownList,
+                                            period: dropdownList[0]
+                                        });
+                                    } else {
                                         this.setState({time: e.target.value, dropdownList: dropdownList});
                                     }
                                 }}
@@ -263,7 +271,7 @@ class ExtractorListPage extends React.Component<any, any> {
                                                     }}>
                                                         <ListItemText
                                                             primary={<Typography><b>{extractor.name}</b></Typography>}
-                                                            secondary={'URL: ' + extractor.url}/>
+                                                            secondary={'Created on: ' + extractor.url}/>
                                                     </ListItem>
                                                 );
                                             })
