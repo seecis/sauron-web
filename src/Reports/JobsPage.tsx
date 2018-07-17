@@ -16,7 +16,7 @@ import {Field, default as Query, Report} from "../models";
 import ExpansionPanelActions from "@material-ui/core/ExpansionPanelActions/ExpansionPanelActions";
 import Button from "@material-ui/core/Button/Button";
 
-interface ReportsPageProps {
+interface JobsPageProps {
     history: any;
 }
 
@@ -37,23 +37,31 @@ export type Url = {
     Url: string;
 }
 
-// todo: versions type'ı belli değil
-export type Job = {
+export type Version = {
     ID: number;
+    CreatedAt: Date;
+    UpdatedAt: Date;
+    DeletedAt?: Date;
     UID: string;
+    Reports: Report[];
+    JobId: number;
+}
+
+export type Job = {
+    id: number;
     CreatedAt: Date;
     UpdatedAt: Date;
     DeletedAt?: Date;
     Cron: string;
     Urls: Url[];
-    Versions: any[];
+    Versions: Version[];
     HtmlExtractor: HtmlExtractor;
     HtmlExtractorId: number;
     Report: Report;
     ScheduledTaskId: number;
 }
 
-class ReportsPage extends React.Component<ReportsPageProps, any> {
+class JobsPage extends React.Component<JobsPageProps, any> {
 
     constructor(props) {
         super(props);
@@ -95,7 +103,7 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                     {
                                         jobs.map((job: Job) => {
                                             return (
-                                                <ListItem key={job.UID} button onClick={() => {
+                                                <ListItem key={job.id} button onClick={() => {
                                                     this.setState({selectedJob: job});
                                                 }}>
                                                     <ListItemText
@@ -203,7 +211,9 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                         </ExpansionPanelDetails>
                                         <ExpansionPanelActions>
                                             <Button onClick={() => {
-                                                this.props.history.push('/report/' + selectedReport.VersionId);
+                                                if (selectedJob == null)
+                                                    return;
+                                                this.props.history.push('/job/' + selectedJob.id);
                                             }}>Details</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
@@ -249,4 +259,4 @@ function getFieldViews(field: Field) {
     })
 }
 
-export default withRouter(ReportsPage);
+export default withRouter(JobsPage);
