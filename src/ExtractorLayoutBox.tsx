@@ -26,7 +26,7 @@ class ExtractorLayoutBox extends React.Component<ExtractorLayoutBoxProps, any> {
             let l = selection.left;
             return {
                 backgroundColor: props.color ? props.color : "purple",
-                opacity: 0.3,
+                opacity: 0.8,
                 position: "absolute",
                 transform: "translate(" + l + "px, " + t + "px)",
                 width: selection.width,

@@ -180,6 +180,9 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
+                    <Typography>Example Value: {this.extractor.defaultValue}</Typography>
+                </ExpansionPanelDetails>
+                <ExpansionPanelDetails>
                     <TextField
                         label="Name of this field"
                         id="margin-none"
