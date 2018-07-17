@@ -138,7 +138,10 @@ class ReportsPage extends React.Component<ReportsPageProps, any> {
                                     :
                                     <ExpansionPanel expanded>
                                         <ExpansionPanelSummary
-                                            key={selectedReport.id}>{selectedReport.id}</ExpansionPanelSummary>
+                                            key={selectedReport.id}>{
+                                            selectedJob == null ? selectedReport.id :
+                                                selectedJob.HtmlExtractor.Name === '' ? 'Unnamed Extractor' : selectedJob.HtmlExtractor.Name
+                                        }</ExpansionPanelSummary>
 
                                         <ExpansionPanelDetails>
                                             <Grid container>
@@ -244,25 +247,6 @@ function getFieldViews(field: Field) {
             </>
         );
     })
-}
-
-function getNonsubbedFieldDisplay(field: Field): string {
-    let label = field.label;
-    let data = field.data;
-
-    if (field.subFields != null) {
-        alert("Subfield not null")
-    }
-
-    if (label === '') {
-        label = 'Unnamed field';
-    }
-
-    if (data === '') {
-        data = 'No data';
-    }
-
-    return label + ': ' + data;
 }
 
 export default withRouter(ReportsPage);
