@@ -119,7 +119,12 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             this.p = new Pathfinder(this.getSubDocumentRoot().body);
         }
         let path = this.p.findUntilRoot(this.selectedElement);
-        this.props.onNewExtractor(new Query(path));
+        let s = this.selectedElement.textContent;
+        if (s == null) {
+            s = ""
+        }
+
+        this.props.onNewExtractor(new Query(path, s.trim()));
     };
 
     translateCoordinates = (e: React.MouseEvent<HTMLElement>): Point => {

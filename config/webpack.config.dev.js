@@ -23,6 +23,10 @@ const env = getClientEnvironment(publicUrl);
 // It is focused on developer experience and fast rebuilds.
 // The production configuration is different and lives in a separate file.
 module.exports = {
+    devServer : {
+        historyApiFallback: true,
+    },
+    mode: "development",
     // You may want 'eval' instead if you prefer to see the compiled output in DevTools.
     // See the discussion in https://github.com/facebookincubator/create-react-app/issues/343.
     devtool: 'cheap-module-source-map',
@@ -94,6 +98,7 @@ module.exports = {
         ],
     },
     module: {
+
         strictExportPresence: true,
         rules: [
             // TODO: Disable require.ensure as it's not a standard language feature.
