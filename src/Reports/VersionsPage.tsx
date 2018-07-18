@@ -26,7 +26,8 @@ class VersionsPage extends React.Component<VersionsPageProps, any> {
         super(props);
         this.state = {
             job: null,
-            selectedVersion: null
+            selectedVersion: null,
+            error: null
         };
     }
 
@@ -40,10 +41,17 @@ class VersionsPage extends React.Component<VersionsPageProps, any> {
 
         axios.get(endPoint, {})
             .then(response => {
-                this.setState({job: response.data})
+                let data = response.data;
+                if (data == null) {
+                    let error = {message: 'Data is null'};
+                    this.setState({error: error});
+                    return;
+                }
+
+                this.setState({job: data})
             })
             .catch(error => {
-                alert(error.message);
+                this.setState({error: error});
             });
     };
 
@@ -53,6 +61,11 @@ class VersionsPage extends React.Component<VersionsPageProps, any> {
         const job: Job = this.state.job;
         const selectedVersion: Version | null = this.state.selectedVersion;
         const jobId = this.props.match.params.jobId;
+        const error = this.state.error;
+
+        if (error != null) {
+            return <div>Error: {error.message}</div>;
+        }
 
         if (job == null) {
             this.getJobById(jobId);

@@ -42,17 +42,26 @@ class ExtractorListPage extends React.Component<any, any> {
             textFieldValue: '',
             period: 1,
             time: 'Days',
-            dropdownList: days
+            dropdownList: days,
+            error: null
         }
     }
 
     getExtractors = () => {
         axios.get(EndPointProvider.ExtractorList, {})
             .then(response => {
-                this.setState({extractors: response.data})
+                let data = response.data;
+                if (data == null) {
+                    let error = {message: 'Data is null'};
+                    this.setState({error: error});
+                    return;
+                }
+
+                this.setState({extractors: data});
             })
             .catch(error => {
                 alert(error.message);
+                this.setState({error: error});
             });
     };
 
@@ -103,6 +112,11 @@ class ExtractorListPage extends React.Component<any, any> {
         const selectedExtractor: Extractor = this.state.selectedExtractor;
         const extractors: Extractor[] | null = this.state.extractors;
         const grayBackground = '#818181';
+        const error = this.state.error;
+
+        if (error != null) {
+            return <div>Error: {error.message}</div>;
+        }
 
         if (extractors == null) {
             this.getExtractors();

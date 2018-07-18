@@ -48,7 +48,7 @@ export type Version = {
 }
 
 export type Job = {
-    id: number;
+    ID: number;
     CreatedAt: Date;
     UpdatedAt: Date;
     DeletedAt?: Date;
@@ -67,17 +67,25 @@ class JobsPage extends React.Component<JobsPageProps, any> {
         super(props);
         this.state = {
             jobs: null,
-            selectedJob: null
+            selectedJob: null,
+            error: null
         };
     }
 
     getReports = () => {
         axios.get(EndPointProvider.GetJobs, {})
             .then(response => {
-                this.setState({jobs: response.data});
+                let data = response.data;
+                if(data == null){
+                    let error = {message: 'Data is null'};
+                    this.setState({error: error});
+                    return;
+                }
+
+                this.setState({jobs: data});
             })
             .catch(error => {
-                alert(error.message);
+                this.setState({error: error});
             });
     };
 
@@ -87,6 +95,11 @@ class JobsPage extends React.Component<JobsPageProps, any> {
         const selectedJob: Job | null = this.state.selectedJob;
         const selectedReport: Report | null = selectedJob != null ? selectedJob.Report : null;
         const jobs: Job[] | null = this.state.jobs;
+        const error = this.state.error;
+
+        if (error != null) {
+            return <div>Error: {error.message}</div>
+        }
 
         if (jobs == null) {
             this.getReports();
@@ -103,7 +116,7 @@ class JobsPage extends React.Component<JobsPageProps, any> {
                                     {
                                         jobs.map((job: Job) => {
                                             return (
-                                                <ListItem key={job.id} button onClick={() => {
+                                                <ListItem key={job.ID} button onClick={() => {
                                                     this.setState({selectedJob: job});
                                                 }}>
                                                     <ListItemText
@@ -213,7 +226,7 @@ class JobsPage extends React.Component<JobsPageProps, any> {
                                             <Button onClick={() => {
                                                 if (selectedJob == null)
                                                     return;
-                                                this.props.history.push('/job/' + selectedJob.id);
+                                                this.props.history.push('/job/' + selectedJob.ID);
                                             }}>Details</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
