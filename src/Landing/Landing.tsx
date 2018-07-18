@@ -30,8 +30,8 @@ class Landing extends React.Component<any, any> {
         return <div style={{minHeight: '100vh', paddingTop: '40%'}}>
             <Typography variant="headline">Sauron</Typography>
             <Card className={"main-card"} square={false}>
-                <CardContent className="card-content">
-                    <TextField id="url" label={"Url to navigate"} inputRef={(ref) => this.textInput = ref}/>
+                <CardContent className="card-content" style={{paddingLeft: 20, paddingRight: 20}}>
+                    <TextField id="url" multiline={true} label={"Url to navigate"} inputRef={(ref) => this.textInput = ref} style={{width: '100%'}}/>
                 </CardContent>
                 <CardActions>
                     <Button onClick={this.handleButtonClick}>Go!</Button>
