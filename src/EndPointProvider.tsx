@@ -10,7 +10,7 @@ if (process) {
 let basePath = '';
 
 //Todo: Add some sense.
-let prodOverride = false;
+let prodOverride = true;
 let connectToProduction = prodOverride || env == 'production';
 
 if (connectToProduction) {
