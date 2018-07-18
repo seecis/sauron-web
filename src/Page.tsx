@@ -14,6 +14,7 @@ import axios from 'axios';
 import {PathProvider} from "./PathProvider";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
+import LoadingProgressDialog from "./LoadingProgressDialog";
 
 interface PageProps {
     api: AxiosStatic,
@@ -73,12 +74,22 @@ class Page extends React.Component<PageProps, any> {
         super.setState(state, callback);
     }
 
+    fetcher = new Fetcher(
+        () => {
+            this.setState({pageLoading: true});
+        },
+        () => {
+            this.setState({pageLoading: false});
+        }
+    );
+
     constructor(props) {
         super(props);
         this.state = {
             extractors: [],
             hoverQuery: '',
-            editAddress: null
+            editAddress: null,
+            pageLoading: false
         }
     }
 
@@ -86,62 +97,83 @@ class Page extends React.Component<PageProps, any> {
 
         const url = decodeURIComponent(this.props.match.url.replace('/page/', ''));
 
-        return <Grid container>
-            <Grid item xs={12}>
-                <Typography
-                    style={{
-                        marginLeft: 30,
-                        marginTop: 10,
-                        marginBottom: 10,
-                        fontSize: 15
-                    }}>{'Currently Browsing ' + url}</Typography>
+        return <>
+            <LoadingProgressDialog open={this.state.pageLoading}/>
+            <Grid container>
+                <Grid item xs={12}>
+                    <Typography
+                        style={{
+                            marginLeft: 30,
+                            marginTop: 10,
+                            marginBottom: 10,
+                            fontSize: 15
+                        }}>{'Currently Browsing ' + url}</Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
+                        <aside>
+                            <ExtractorModule extractors={this.state.extractors}
+                                             onHoverSet={(q) => this.setState({hoverQuery: q})}
+                                             url={url}
+                                             width={"420px"}
+                                             onEditAddressSet={(address: string | null) => {
+                                                 this.setState({editAddress: address})
+                                             }}
+                                             editAddress={this.state.editAddress}
+                                             onSaveSuccess={() => {
+                                                 this.props.history.push(PathProvider.ExtractorList)
+                                             }}
+                            />
+                        </aside>
+                        <main>
+                            <BrowserInBrowser
+                                key={"k"}
+                                api={this.fetcher}
+                                style={{
+                                    width: "100%",
+                                    height: "100%"
+                                }}
+                                url={url}
+                                onNewExtractor={this.handleNewExtractor}
+                                hoverQuery={this.state.hoverQuery}
+                                onGetSubDocumentRoot={(dom: Document) => {
+                                    this.dom = dom;
+                                }}
+                            />
+                        </main>
+                    </div>
+                </Grid>
             </Grid>
-            <Grid item xs={12}>
-                <div style={{top: "0", position: "relative", display: "flex", height: "100vh"}}>
-                    <aside>
-                        <ExtractorModule extractors={this.state.extractors}
-                                         onHoverSet={(q) => this.setState({hoverQuery: q})}
-                                         url={url}
-                                         width={"420px"}
-                                         onEditAddressSet={(address: string | null) => {
-                                             this.setState({editAddress: address})
-                                         }}
-                                         editAddress={this.state.editAddress}
-                                         onSaveSuccess={() => {
-                                             this.props.history.push(PathProvider.ExtractorList)
-                                         }}
-                        />
-                    </aside>
-                    <main>
-                        <BrowserInBrowser
-                            key={"k"}
-                            api={new Fetcher()}
-                            style={{
-                                width: "100%",
-                                height: "100%"
-                            }}
-                            url={url}
-                            onNewExtractor={this.handleNewExtractor}
-                            hoverQuery={this.state.hoverQuery}
-                            onGetSubDocumentRoot={(dom: Document) => {
-                                this.dom = dom;
-                            }}
-                        />
-                    </main>
-                </div>
-            </Grid>
-        </Grid>
+        </>
     }
 }
 
 class Fetcher implements DocumentFetcher {
+
+    private onLoading;
+    private onComplete;
+
+    constructor(onLoading, onComplete) {
+        this.onLoading = onLoading;
+        this.onComplete = onComplete;
+    }
+
+    getInstance = () => {
+        return this;
+    };
+
     async fetch(url: string) {
+
+        this.onLoading();
+        let instance = this.getInstance();
 
         return axios({url: 'http://proxy.sauron.amerikadaniste.com/new?url=' + url, maxRedirects: 86})
             .then(function (response) {
+                instance.onComplete();
                 return response.data;
             })
             .catch(function (error) {
+                instance.onComplete();
                 return error;
             });
     }
