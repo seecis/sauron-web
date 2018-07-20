@@ -125,7 +125,9 @@ class Page extends React.Component<PageProps, any> {
                                              }}
                             />
                         </aside>
-                        <main>
+                        <main style={{
+                            overflow: 'hidden'
+                        }}>
                             <BrowserInBrowser
                                 key={"k"}
                                 api={this.fetcher}
