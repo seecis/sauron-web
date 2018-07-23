@@ -48,7 +48,7 @@ export type Version = {
 }
 
 export type Job = {
-    ID: number;
+    id: number;
     CreatedAt: Date;
     UpdatedAt: Date;
     DeletedAt?: Date;
@@ -116,7 +116,7 @@ class JobsPage extends React.Component<JobsPageProps, any> {
                                     {
                                         jobs.map((job: Job) => {
                                             return (
-                                                <ListItem key={job.ID} button onClick={() => {
+                                                <ListItem key={job.id} button onClick={() => {
                                                     this.setState({selectedJob: job});
                                                 }}>
                                                     <ListItemText
@@ -226,7 +226,7 @@ class JobsPage extends React.Component<JobsPageProps, any> {
                                             <Button onClick={() => {
                                                 if (selectedJob == null)
                                                     return;
-                                                this.props.history.push('/job/' + selectedJob.ID);
+                                                this.props.history.push('/job/' + selectedJob.id);
                                             }}>Details</Button>
                                         </ExpansionPanelActions>
                                     </ExpansionPanel>
