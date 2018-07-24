@@ -110,14 +110,14 @@ interface ExtractorViewProps {
 }
 
 class ExtractorView extends React.Component<ExtractorViewProps, any> {
-    handleMouseOver = (event) => {
-        event.preventDefault();
-        this.hoverCallback(this.extractor.selector);
-    };
+        handleMouseOver = (event) => {
+            event.preventDefault();
+            this.hoverCallback(this.extractor.selector);
+        };
 
-    childHover = (path: string) => {
-        this.hoverCallback(this.extractor.selector + " > " + path)
-    };
+        childHover = (path: string) => {
+            this.hoverCallback(this.extractor.selector + " > " + path)
+        };
 
     addSubQuery = () => {
         // this.setState(state => {
@@ -180,7 +180,7 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>Example Value: {this.extractor.defaultValue}</Typography>
+                    <Typography>Example Value: {getDisplayText(this.extractor.defaultValue)}</Typography>
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
                     <TextField
@@ -225,6 +225,17 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
             </ExpansionPanel></>
         )
     }
+}
+
+function getDisplayText(originalText: string | null):string {
+    if(originalText === null)
+        return '';
+
+    if(originalText.length > 100){
+        return originalText.substring(0, 99) + '...';
+    }
+
+    return originalText;
 }
 
 export {
