@@ -39,6 +39,7 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
             expanded: expanded ? index : -1,
         });
     };
+    
 
     private parentValue: string;
     private onListItemHover: (string) => any;
