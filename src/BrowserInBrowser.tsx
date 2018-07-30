@@ -149,10 +149,12 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
             <div style={this.props.style}>
                 <iframe
                     className={"sauron-framer"}
-                    scrolling="no"
                     id="wrapper"
                     srcDoc={this.state.u}
-                    frameBorder="0"/>
+                    height={'100%'}
+                    width={'100%'}
+                    frameBorder="0"
+                />
                 <div id="overlay"
                      onMouseMove={e => {
                          this.mouseMove(this.translateCoordinates(e))
@@ -168,6 +170,18 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
     componentDidMount() {
         // todo: async
         this.fetchUrl(this.props.url);
+
+        let root = document.getElementById('root');
+        if(root != null){
+            root.style.overflow = 'hidden';
+        }
+    }
+
+    componentWillUnmount(){
+        let root = document.getElementById('root');
+        if(root != null){
+            root.style.overflow = '';
+        }
     }
 }
 
