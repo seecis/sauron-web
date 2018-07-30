@@ -172,14 +172,14 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
         this.fetchUrl(this.props.url);
 
         let root = document.getElementById('root');
-        if(root != null){
+        if (root != null) {
             root.style.overflow = 'hidden';
         }
     }
 
-    componentWillUnmount(){
+    componentWillUnmount() {
         let root = document.getElementById('root');
-        if(root != null){
+        if (root != null) {
             root.style.overflow = '';
         }
     }

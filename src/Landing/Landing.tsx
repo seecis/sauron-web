@@ -31,7 +31,9 @@ class Landing extends React.Component<any, any> {
             <Typography variant="headline">Sauron</Typography>
             <Card className={"main-card"} square={false}>
                 <CardContent className="card-content" style={{paddingLeft: 20, paddingRight: 20}}>
-                    <TextField id="url" multiline={true} label={"Url to navigate"} inputRef={(ref) => this.textInput = ref} style={{width: '100%'}}/>
+                    <TextField id="url" multiline={true} label={"Url to navigate"} inputRef={(ref) => this.textInput = ref} style={{width: '100%'}}
+                               defaultValue={'https://www.amazon.com/HOOVER-FH11300PC-Spotless-Portable-Upholstery/dp/B01KIMOEW4/'}
+                    />
                 </CardContent>
                 <CardActions>
                     <Button onClick={this.handleButtonClick}>Go!</Button>
