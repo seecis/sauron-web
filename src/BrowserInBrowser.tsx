@@ -150,6 +150,7 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
                 <iframe
                     className={"sauron-framer"}
                     id="wrapper"
+                    scrolling={'no'}
                     srcDoc={this.state.u}
                     height={'100%'}
                     width={'100%'}
@@ -170,18 +171,6 @@ class BrowserInBrowser extends React.Component<ExtractorWindowProps, any> {
     componentDidMount() {
         // todo: async
         this.fetchUrl(this.props.url);
-
-        let root = document.getElementById('root');
-        if (root != null) {
-            root.style.overflow = 'hidden';
-        }
-    }
-
-    componentWillUnmount() {
-        let root = document.getElementById('root');
-        if (root != null) {
-            root.style.overflow = '';
-        }
     }
 }
 

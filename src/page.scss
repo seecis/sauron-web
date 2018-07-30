@@ -4,11 +4,12 @@ aside {
   width: $menuWidth;
 }
 
+//todo: please fix those 15000px heights
 main {
   top: 0;
   position: relative;
   width: calc(100% - #{$menuWidth});
-  height: 100vh;
+  height: 13000px;
   overflow: scroll;
 }
 
@@ -16,7 +17,7 @@ main {
   overflow: hidden;
   overflowX: 'hidden';
   overflowY: 'hidden';
-  height: 100%;
+  height: 13000px;
   width: 100%;
   position: absolute;
   top:0;
@@ -30,6 +31,6 @@ main {
   opacity: 0.1;
   position: absolute;
   width: 100%;
-  height: 100%;
+  height: 13000px;
   background: aqua;
 }
