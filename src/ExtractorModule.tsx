@@ -21,7 +21,6 @@ export interface ExtractorModuleProps {
     onEditAddressSet: (address: string | null) => void
     editAddress: string | null
     onSaveSuccess: () => void
-    onDeleteQuery: (query: Query) => void
 }
 
 class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
@@ -96,7 +95,6 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                                                 depth={0}
                                                 onEditAddressSet={this.props.onEditAddressSet}
                                                 editAddress={this.props.editAddress}
-                                                onDeleteQuery={this.props.onDeleteQuery}
                                             />
                                             :
                                             <Typography>Please Select From Right</Typography>

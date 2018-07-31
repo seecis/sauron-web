@@ -23,18 +23,15 @@ interface ExtractorListProps {
     depth: number;
     onEditAddressSet: (address: string | null) => void
     editAddress: string | null
-    onDeleteQuery: (query: Query) => void
 }
 
 class ExtractorList extends React.Component<ExtractorListProps, any> {
     handleDelete = (index: number) => (e: MouseEvent) => {
-        let query = this.props.extractors[index];
-        this.props.onDeleteQuery(query);
-        // e.preventDefault();
-        // this.setState(state => {
-        //     state.extractors.splice(index, 1);
-        //     return state;
-        // });
+        e.preventDefault();
+        this.setState(state => {
+            state.extractors.splice(index, 1);
+            return state;
+        });
     };
 
     handleExtractorExpand = (index: number) => (event, expanded) => {
@@ -87,7 +84,6 @@ class ExtractorList extends React.Component<ExtractorListProps, any> {
                                 address={(this.parentValue ? (this.parentValue + ".") : "") + (index + 1)}
                                 onEditAddressSet={this.props.onEditAddressSet}
                                 editAddress={this.props.editAddress}
-                                onDeleteQuery={this.props.onDeleteQuery}
                             />
                         }))
                     }
@@ -112,7 +108,6 @@ interface ExtractorViewProps {
     address: string
     onEditAddressSet: (address: string | null) => void
     editAddress: string | null
-    onDeleteQuery: (query: Query) => void
 }
 
 class ExtractorView extends React.Component<ExtractorViewProps, any> {
@@ -220,7 +215,6 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
                         // todo: buraya bakıcaz
                         onEditAddressSet={this.props.onEditAddressSet}
                         editAddress={this.props.editAddress}
-                        onDeleteQuery={this.props.onDeleteQuery}
                     />
                 </ExpansionPanelDetails>
                 <ExpansionPanelActions>
@@ -234,11 +228,11 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
     }
 }
 
-function getDisplayText(originalText: string | null): string {
-    if (originalText === null)
+function getDisplayText(originalText: string | null):string {
+    if(originalText === null)
         return '';
 
-    if (originalText.length > 100) {
+    if(originalText.length > 100){
         return originalText.substring(0, 99) + '...';
     }
 

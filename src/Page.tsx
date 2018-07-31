@@ -123,25 +123,6 @@ class Page extends React.Component<PageProps, any> {
                                              onSaveSuccess={() => {
                                                  this.props.history.push(PathProvider.ExtractorList)
                                              }}
-                                             onDeleteQuery={(query: Query) => {
-                                                 let extractors = this.state.extractors;
-                                                 let index = -1;
-                                                 for (let i = 0; i < extractors.length; i++) {
-                                                     let extractor = extractors[i];
-                                                     if (extractor == null)
-                                                         continue;
-
-                                                     if (extractor == query) {
-                                                         index = i;
-                                                         break;
-                                                     }
-                                                 }
-
-                                                 if (index != -1) {
-                                                     extractors.splice(index, 1);
-                                                     this.setState({extgractors: extractors});
-                                                 }
-                                             }}
                             />
                         </aside>
                         <main style={{
