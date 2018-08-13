@@ -4,7 +4,6 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import {ExpansionPanelDetails, ExpansionPanelSummary} from '@material-ui/core/'
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button"
 import List from "@material-ui/core/List"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -15,6 +14,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Query from './models'
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import FormControlLabel from "@material-ui/core/FormControlLabel/FormControlLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import TextField from "@material-ui/core/TextField";
 
 interface ExtractorListProps {
     extractors: Array<Query>,
@@ -113,11 +114,11 @@ interface ExtractorViewProps {
 class ExtractorView extends React.Component<ExtractorViewProps, any> {
     handleMouseOver = (event) => {
         event.preventDefault();
-        this.hoverCallback(this.extractor.selector);
+        this.hoverCallback(this.state.extractor.selector);
     };
 
     childHover = (path: string) => {
-        this.hoverCallback(this.extractor.selector + " > " + path)
+        this.hoverCallback(this.state.extractor.selector + " > " + path)
     };
 
     addSubQuery = () => {
@@ -129,13 +130,36 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
     };
 
     handleLabelChange = (event) => {
+        event.preventDefault()
+
         let label = event.target.value;
-        this.props.onExtracorLabelChange(label, this.extractor);
-        this.extractor.name = label;
-        this.setState({extractor: this.extractor});
+        this.onLabelSet(label.toString())
     };
 
-    private extractor: Query;
+    onLabelSet = (label: string) => {
+        let ex: Query = this.state.extractor;
+        this.props.onExtracorLabelChange(label, ex);
+        ex.name = label;
+        this.setState({extractor: ex});
+    };
+
+    options = [
+        "Name",
+        "Price",
+        "Dimensions",
+        "Category",
+        "Weight",
+        "Other"
+    ];
+
+    handleClickListItem = event => {
+        this.setState({anchorEl: event.currentTarget});
+    };
+
+    handleClose = () => {
+        this.setState({anchorEl: null});
+    };
+
     private hoverCallback: (string) => any;
     private onChangeCallback: (event: React.ChangeEvent<{}>, expanded: (boolean | number)) => void;
 
@@ -143,10 +167,10 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
         super(props);
         this.hoverCallback = props.hoverCallback;
         this.onChangeCallback = props.onChange;
-        this.extractor = props.extractor;
         this.state = {
             childExtractors: props.extractor.subQueries,
             isChecked: false,
+            extractor: props.extractor
         };
     }
 
@@ -181,16 +205,25 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
 
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
-                    <Typography>Example Value: {getDisplayText(this.extractor.defaultValue)}</Typography>
+                    <Typography>Example Value: {getDisplayText(this.state.extractor.defaultValue)}</Typography>
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
                     <TextField
+                        select
                         label="Name of this field"
                         id="margin-none"
                         defaultValue={"Label " + props.index}
-                        value={this.extractor.name}
+                        value={this.state.extractor.name}
                         onChange={this.handleLabelChange}
-                    />
+                        helperText={"Please select the name for this field"}
+                        onClick={this.handleClickListItem}>
+                        {this.options.map((option, index) => (
+                            <MenuItem key={option} value={option}>
+                                {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+
                 </ExpansionPanelDetails>
                 <ExpansionPanelDetails>
                     <FormControlLabel
@@ -228,11 +261,11 @@ class ExtractorView extends React.Component<ExtractorViewProps, any> {
     }
 }
 
-function getDisplayText(originalText: string | null):string {
-    if(originalText === null)
+function getDisplayText(originalText: string | null): string {
+    if (originalText === null)
         return '';
 
-    if(originalText.length > 100){
+    if (originalText.length > 100) {
         return originalText.substring(0, 99) + '...';
     }
 
