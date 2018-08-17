@@ -1,36 +1,36 @@
-$menuWidth: 420px;
-
-aside {
-  width: $menuWidth;
-}
-
-//todo: please fix those 15000px heights
-main {
-  top: 0;
-  position: relative;
-  width: calc(100% - #{$menuWidth});
-  height: 13000px;
-  overflow: scroll;
-}
-
-.sauron-framer {
-  overflow: hidden;
-  overflowX: 'hidden';
-  overflowY: 'hidden';
-  height: 13000px;
-  width: 100%;
-  position: absolute;
-  top:0;
-  left:0;
-  right:0;
-  bottom:0;
-}
-
-#overlay {
-  top: 0;
-  opacity: 0.1;
-  position: absolute;
-  width: 100%;
-  height: 13000px;
-  background: aqua;
-}
+//$menuWidth: 420px;
+//
+//aside {
+//  width: $menuWidth;
+//}
+//
+////todo: please fix those 15000px heights
+//main {
+//  top: 0;
+//  position: relative;
+//  width: calc(100% - #{$menuWidth});
+//  height: 13000px;
+//  overflow: scroll;
+//}
+//
+//.sauron-framer {
+//  overflow: hidden;
+//  overflowX: 'hidden';
+//  overflowY: 'hidden';
+//  height: 13000px;
+//  width: 100%;
+//  position: absolute;
+//  top:0;
+//  left:0;
+//  right:0;
+//  bottom:0;
+//}
+//
+//#overlay {
+//  top: 0;
+//  opacity: 0.1;
+//  position: absolute;
+//  width: 100%;
+//  height: 13000px;
+//  background: aqua;
+//}

@@ -1,22 +1,10 @@
 import * as React from 'react';
 
-let env;
-if (process) {
-    env = process.env.NODE_ENV;
-} else {
-    env = undefined;
-}
 
-let basePath = '';
-
-//Todo: Add some sense.
-let prodOverride = true;
-let connectToProduction = prodOverride || env == 'production';
-
-if (connectToProduction) {
-    basePath = 'http://api.sauron.amerikadaniste.com';
-} else {
-    basePath = 'http://192.168.1.83:9091';
+let basePath = 'http://sauron.amerikadaniste.com';
+let SAURON_API_URL = window.SAURON_API_URL;
+if (SAURON_API_URL) {
+    basePath = SAURON_API_URL
 }
 
 export class EndPointProvider {
