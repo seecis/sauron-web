@@ -62,7 +62,7 @@
     "start": "node scripts/set-endpoint.js && webpack-dev-server  --mode development --inline --hot --open",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "server": "webpack --mode production --config webpack.config.js && node scripts/set-endpoint.js && serve dist",
+    "server": "node scripts/set-endpoint.js && serve dist",
     "set-endpoint": "node scripts/set-endpoint.js"
   },
   "devDependencies": {
