@@ -19,6 +19,11 @@ module.exports = {
         path: path.join(basePath, 'dist'),
         filename: '[name].js',
     },
+    optimization: {
+        splitChunks: {
+            chunks: 'all'
+        }
+    },
     module: {
         rules: [
             {
@@ -49,7 +54,6 @@ module.exports = {
             }
         ]
     },
-    devtool: "inline-source-map",
     devServer: {
         port: 8080,
         noInfo: false

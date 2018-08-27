@@ -71,7 +71,7 @@ import * as ReactDOM from 'react-dom';
 import MenuIcon from '@material-ui/icons/Menu';
 import StarIcon from '@material-ui/icons/Star';
 import InboxIcon from '@material-ui/icons/Inbox';
-import {Axios, AxiosStatic} from "axios";
+import Axios, {AxiosStatic} from "axios";
 import createMemoryHistory from "history/createMemoryHistory";
 import {MemoryHistory} from "history";
 import createMuiTheme from "@material-ui/core/styles/createMuiTheme";
@@ -155,7 +155,6 @@ class App extends React.Component {
     constructor(props) {
         super(props);
         this.state = {};
-        this.api = new Axios();
         this.h = createMemoryHistory();
         this.theme = createMuiTheme({
             palette: {
@@ -176,7 +175,7 @@ class App extends React.Component {
                             <Route path={'/page/:url'} component={() => {
                                 return <React.Fragment>
                                     <SauronAppBar title={'Create Extractor'}/>
-                                    <Page api={this.api}/>
+                                    <Page/>
                                 </React.Fragment>
                             }}/>
                             <Route exact path={PathProvider.ExtractorList} component={() => {

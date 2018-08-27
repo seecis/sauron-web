@@ -6,22 +6,19 @@ import * as React from 'react';
 import Query from './models'
 import ExtractorModule from "./ExtractorModule";
 import BrowserInBrowser from "./BrowserInBrowser";
-import {AxiosStatic} from 'axios';
 import {DocumentFetcher} from './DocumentFetcher'
 import "./page.scss"
 import {withRouter} from "react-router";
-import axios from 'axios';
 import {PathProvider} from "./PathProvider";
 import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import LoadingProgressDialog from "./LoadingProgressDialog";
+import axios from 'axios';
 
 interface PageProps {
-    api: AxiosStatic,
     match: any,
     history: any
 }
-
 
 class Page extends React.Component<PageProps, any> {
 

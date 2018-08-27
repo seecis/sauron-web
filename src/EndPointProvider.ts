@@ -1,8 +1,6 @@
-import * as React from 'react';
-
-
 let basePath = 'http://sauron.amerikadaniste.com';
-let SAURON_API_URL = window.SAURON_API_URL;
+
+let SAURON_API_URL = ((<any>window).SAURON_API_URL);
 if (SAURON_API_URL) {
     basePath = SAURON_API_URL
 }
