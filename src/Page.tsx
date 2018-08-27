@@ -14,6 +14,7 @@ import Grid from "@material-ui/core/Grid/Grid";
 import Typography from "@material-ui/core/Typography/Typography";
 import LoadingProgressDialog from "./LoadingProgressDialog";
 import axios from 'axios';
+import {EndPointProvider} from "./EndPointProvider";
 
 interface PageProps {
     match: any,
@@ -166,7 +167,7 @@ class Fetcher implements DocumentFetcher {
         this.onLoading();
         let instance = this.getInstance();
 
-        return axios({url: '/new?url=' + url, maxRedirects: 86})
+        return axios({url: EndPointProvider.Proxy +'/new?url=' + url, maxRedirects: 86})
             .then(function (response) {
                 instance.onComplete();
                 return response.data;
