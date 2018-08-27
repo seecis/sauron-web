@@ -166,7 +166,7 @@ class Fetcher implements DocumentFetcher {
         this.onLoading();
         let instance = this.getInstance();
 
-        return axios({url: 'http://proxy.sauron.amerikadaniste.com/new?url=' + url, maxRedirects: 86})
+        return axios({url: '/new?url=' + url, maxRedirects: 86})
             .then(function (response) {
                 instance.onComplete();
                 return response.data;

@@ -2,7 +2,12 @@ let fs = require('fs');
 let endpoint = process.env['SAURON_ENDPOINT'];
 let fileContent = "";
 if (endpoint) {
-    fileContent = 'var SAURON_API_URL = "' + endpoint + '";';
+    fileContent = 'var SAURON_API_URL = "' + endpoint + '";\n';
+}
+
+    let proxyEndpoint = process.env['SAURON_PROXY_ENDPOINT'];
+if (proxyEndpoint) {
+    fileContent += 'var SAURON_PROXY_URL = "' + proxyEndpoint + '";\n';
 }
 
 fs.writeFile("dist/endpoint.js", fileContent, function (err) {
