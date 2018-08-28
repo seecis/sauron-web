@@ -68,7 +68,7 @@ class ExtractorModule extends React.Component<ExtractorModuleProps, any> {
                 <div style={{width: this.props.width}}>
                     <ExpansionPanel style={{width: '400px', marginLeft: '10px', marginTop: '10px'}}>
                         <ExpansionPanelSummary
-                            expandIcon={<ExpandMore/>}>Extractor</ExpansionPanelSummary>
+                            expandIcon={<ExpandMore/>}><Typography>Extractor</Typography></ExpansionPanelSummary>
                         <ExpansionPanelDetails>
                             <Grid container>
                                 <Grid item xs={12}>
